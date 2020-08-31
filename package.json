@@ -1,0 +1,19 @@
+{
+  "name": "real-easy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/williamshelley/real-easy.git"
+  },
+  "author": "William Shelley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/williamshelley/real-easy/issues"
+  },
+  "homepage": "https://github.com/williamshelley/real-easy#readme"
+}

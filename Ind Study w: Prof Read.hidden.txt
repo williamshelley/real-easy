@@ -1,0 +1,23 @@
+https://www.skidmore.edu/registrar/forms/independent-study.php
+
+Fill out ind study form
+Acquire list of MVPs
+Real estate contract lifecycle
+1. userA wants house renovated
+2. userA signs up/in
+3. userA posts requests for contracting work
+4. userB signs in 
+5. userB finds contract
+6. userB sends request to work on property
+7. userA accepts/denies userB's request
+
+Site should have:
+- default positions that can be requested for hire e.g. construction worker, plumber, electrician, interior designer, etc. (Ask Ben), 
+- listings of houses to be renovated
+- ability to search for users/listings
+- reliability ratings 
+
+jmeter 
+- record interaction
+- specific set of tests
+- parameterize test (different data)
