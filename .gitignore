@@ -1,2 +1,3 @@
 /*.hidden.txt
 /node_modules
+/config/keys.js
