@@ -1,1 +1,2 @@
-*.hidden.txt
+/*.hidden.txt
+/node_modules
