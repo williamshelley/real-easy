@@ -7,9 +7,25 @@ const bcrypt = require('bcryptjs');
 const User = require("../../models/User")
 const keys = require('../../../config/keys');
 const validateSignupInput = require('../../validation/signup');
-const validateSigninInput = require('../../validation/signin');
+const validateLoginInput = require('../../validation/login');
 
-router.post("/register", (req, res) => {
+const frontendUser = user => {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    birthDate: user.birthDate,
+    about: user.about
+  }
+}
+
+const backendUser = user => {
+  let data = frontendUser(user);
+  data.password = user.password;
+  return data;
+}
+
+router.post("/signup", (req, res) => {
   const {
     errors,
     isValid
@@ -20,28 +36,20 @@ router.post("/register", (req, res) => {
   }
 
   User.findOne({
-    handle: req.body.email
+    email: req.body.email
   }).then(user => {
     if (user) {
       errors.email = "User already exists";
       return res.status(400).json(errors);
     } else {
-      const newUser = new User({
-        handle: req.body.handle,
-        email: req.body.email,
-        password: req.body.password
-      });
-
-      bcrypt.genSalt(10, (err, salt) => {
+      const newUser = new User(backendUser(req.body));
+      bcrypt.genSalt(10, (error, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           if (err) throw err;
           newUser.password = hash;
           newUser.save()
             .then(user => {
-              const payload = {
-                id: user.id,
-                handle: user.handle
-              };
+              const payload = frontendUser(user);
 
               jwt.sign(payload, keys.secretOrKey, {
                 expiresIn: 3600
@@ -63,18 +71,15 @@ router.post("/login", (req, res) => {
   const {
     errors,
     isValid
-  } = validateSigninInput(req.body);
+  } = validateLoginInput(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  // const handle = req.body.handle;
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
 
   User.findOne({
-    // handle,
     email
   }).then(user => {
     if (!user) {
@@ -84,10 +89,7 @@ router.post("/login", (req, res) => {
 
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
-        const payload = {
-          id: user.id,
-          handle: user.handle
-        };
+        const payload = frontendUser(user);
 
         jwt.sign(payload, keys.secretOrKey, {
           expiresIn: 3600
@@ -108,11 +110,7 @@ router.post("/login", (req, res) => {
 router.get('/current', passport.authenticate('jwt', {
   session: false
 }), (req, res) => {
-  res.json({
-    id: req.user.id,
-    handle: req.user.handle,
-    email: req.user.email
-  });
+  res.json(frontendUser(req.user));
 })
 
 module.exports = router;

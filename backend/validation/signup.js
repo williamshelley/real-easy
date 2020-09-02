@@ -1,21 +1,17 @@
 const Validator = require('validator');
-const validText = require('./valid-text');
+const { validText, validDate } = require('./validitation-helpers');
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 30;
 
 module.exports = function validateSignupInput(data) {
   let errors = {};
 
-  data.handle = validText(data.handle) ? data.handle : '';
   data.email = validText(data.email) ? data.email : '';
   data.password = validText(data.password) ? data.password : '';
   data.password2 = validText(data.password2) ? data.password2 : '';
 
-  if (!Validator.isLength(data.handle, { min: 2, max: 30 })) {
-    errors.handle = 'Handle must be between 2 and 30 characters';
-  }
-
-  if (Validator.isEmpty(data.handle)) {
-    errors.handle = 'Handle field is required';
-  }
+  data.name = validText(data.name) ? data.name : '';
+  data.birthDate = validDate(data.birthDate) ? new Date(data.birthDate) : null;
 
   if (Validator.isEmpty(data.email)) {
     errors.email = 'Email field is required';
@@ -29,7 +25,9 @@ module.exports = function validateSignupInput(data) {
     errors.password = 'Password field is required';
   }
 
-  if (!Validator.isLength(data.password, { min: 6, max: 30 })) {
+  if (!Validator.isLength(data.password, { 
+    min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH
+  })) {
     errors.password = 'Password must be at least 6 characters';
   }
 
@@ -39,6 +37,14 @@ module.exports = function validateSignupInput(data) {
 
   if (!Validator.equals(data.password, data.password2)) {
     errors.password2 = 'Passwords must match';
+  }
+
+  if (Validator.isEmpty(data.name)) {
+    errors.name = "Name field is required";
+  }
+
+  if (!data.birthDate) {
+    errors.date = "Birth date is invalid";
   }
 
   return {

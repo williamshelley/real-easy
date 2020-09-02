@@ -1,7 +1,7 @@
 const Validator = require('validator');
-const validText = require('./valid-text');
+const validText = require('./validitation-helpers');
 
-module.exports = function validateSigninInput(data) {
+module.exports = function validateLoginInput(data) {
   let errors = {};
 
   data.email = validText(data.email) ? data.email : '';
