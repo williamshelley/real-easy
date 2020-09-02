@@ -1,4 +1,4 @@
-import * as API_UTIL from "../util/session_api";
+import * as API_UTIL from "../util/api/session_api_util";
 import jwt_decode from 'jwt-decode';
 export const LOGIN_CURRENT_USER = "LOGIN_CURRENT_USER";
 export const LOGOUT_CURRENT_USER = "LOGOUT_CURRENT_USER";

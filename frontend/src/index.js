@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import jwt_decode from "jwt-decode";
 import Root from './components/root';
 import configureStore from './store/store';
-import { JWT_TOKEN, logout, login, signup } from './actions/session_actions';
-import { setAuthToken } from './util/session_api';
+import { JWT_TOKEN, logout, login } from './actions/session_actions';
+import { setAuthToken } from './util/api/session_api_util';
 
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.getElementById("root");
@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.dispatch = store.dispatch;
   window.login = login;
   window.logout = logout;
-  window.signup = signup;
 
   ReactDOM.render(<Root store={store} />, root);
 });
