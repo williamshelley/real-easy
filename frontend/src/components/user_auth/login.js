@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { login } from "../../actions/session_actions";
 
-const LoginComponent = ({ login }) => {
+const LoginComponent = ({ login, history }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -21,13 +22,18 @@ const LoginComponent = ({ login }) => {
       />
 
       <input 
-        type="text"
+        type="password"
         placeholder="Password" 
         value={password} 
         onChange={e => setPassword(e.target.value)}
       />
       
       <input type="submit" value="Login"></input>
+
+      <div className="inline-button">
+        <p>Don't have account?</p>
+        <button onClick={() => history.push("/signup")}>Signup</button>
+      </div>
     </form>
   );
 }
@@ -39,6 +45,6 @@ const mdp = dispatch => {
   }
 }
 
-const LoginModal = connect(null, mdp)(LoginComponent);
+const LoginModal = withRouter(connect(null, mdp)(LoginComponent));
 
 export default LoginModal;

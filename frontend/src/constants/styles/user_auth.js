@@ -1,1 +1,0 @@
-export const USER_AUTH_MODAL = "user-auth-modal";
