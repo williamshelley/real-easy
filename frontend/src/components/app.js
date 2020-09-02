@@ -1,8 +1,8 @@
 import React from "react";
 import { AuthRoute, ProtectedRoute } from "../util/route_util";
 import { Switch } from "react-router-dom";
-import logoutModal from "./user_auth/logout";
 import LoginModal from "./user_auth/login";
+import LogoutModal from "./user_auth/logout";
 
 const App = () => {
   return (
@@ -11,7 +11,7 @@ const App = () => {
       <div className="main-content">
         <Switch>
           <AuthRoute path="/login" component={LoginModal} />
-          <ProtectedRoute path="/" component={logoutModal} />
+          <ProtectedRoute path="/" component={LogoutModal} />
         </Switch>
       </div>
     </>
