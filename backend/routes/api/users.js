@@ -8,11 +8,16 @@ const User = require("../../models/User")
 const keys = require('../../../config/keys');
 const validateSignupInput = require('../../validation/signup');
 const validateLoginInput = require('../../validation/login');
+const { BAD_REQUEST_STATUS } = require('../../constants/error-constants');
+const { TOKEN_EXPIRE_TIME, SALT_LENGTH } = require('../../constants/user-auth-constants');
+
+const USER_EXISTS_MESSAGE = "User already exists";
+const NOT_USER_EXISTS_MESSAGE = "User does not exist";
+const BAD_PASSWORD_MESSAGE = "Invalid Password";
 
 const frontendUser = user => {
   return {
     id: user.id,
-    email: user.email,
     name: user.name,
     birthDate: user.birthDate,
     about: user.about
@@ -21,10 +26,12 @@ const frontendUser = user => {
 
 const backendUser = user => {
   let data = frontendUser(user);
+  data.email = user.email;
   data.password = user.password;
   return data;
 }
 
+// SIGN UP USER
 router.post("/signup", (req, res) => {
   const {
     errors,
@@ -32,18 +39,18 @@ router.post("/signup", (req, res) => {
   } = validateSignupInput(req.body);
 
   if (!isValid) {
-    return res.status(400).json(errors);
+    return res.status(BAD_REQUEST_STATUS).json(errors);
   }
 
   User.findOne({
     email: req.body.email
   }).then(user => {
     if (user) {
-      errors.email = "User already exists";
-      return res.status(400).json(errors);
+      errors.email = USER_EXISTS_MESSAGE;
+      return res.status(BAD_REQUEST_STATUS).json(errors);
     } else {
       const newUser = new User(backendUser(req.body));
-      bcrypt.genSalt(10, (error, salt) => {
+      bcrypt.genSalt(SALT_LENGTH, (error, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           if (err) throw err;
           newUser.password = hash;
@@ -52,7 +59,7 @@ router.post("/signup", (req, res) => {
               const payload = frontendUser(user);
 
               jwt.sign(payload, keys.secretOrKey, {
-                expiresIn: 3600
+                expiresIn: TOKEN_EXPIRE_TIME
               }, (err, token) => {
                 res.json({
                   success: true,
@@ -60,13 +67,15 @@ router.post("/signup", (req, res) => {
                 });
               });
             })
-            .catch(err => console.log(err));
+            .catch(err => res.status(BAD_REQUEST_STATUS).json(err));
         });
       });
     }
   });
 });
 
+
+// LOG IN USER
 router.post("/login", (req, res) => {
   const {
     errors,
@@ -74,7 +83,7 @@ router.post("/login", (req, res) => {
   } = validateLoginInput(req.body);
 
   if (!isValid) {
-    return res.status(400).json(errors);
+    return res.status(BAD_REQUEST_STATUS).json(errors);
   }
 
   const { email, password } = req.body;
@@ -83,8 +92,8 @@ router.post("/login", (req, res) => {
     email
   }).then(user => {
     if (!user) {
-      errors.handle = "This user does not exist";
-      return res.status(400).json(errors);
+      errors.handle = NOT_USER_EXISTS_MESSAGE;
+      return res.status(BAD_REQUEST_STATUS).json(errors);
     }
 
     bcrypt.compare(password, user.password).then(isMatch => {
@@ -92,7 +101,7 @@ router.post("/login", (req, res) => {
         const payload = frontendUser(user);
 
         jwt.sign(payload, keys.secretOrKey, {
-          expiresIn: 3600
+          expiresIn: TOKEN_EXPIRE_TIME
         }, (err, token) => {
           res.json({
             success: true,
@@ -100,13 +109,15 @@ router.post("/login", (req, res) => {
           });
         });
       } else {
-        errors.password = "Incorrect password";
-        return res.status(400).json(errors);
+        errors.password = BAD_PASSWORD_MESSAGE;
+        return res.status(BAD_REQUEST_STATUS).json(errors);
       }
     });
   });
 });
 
+
+// GET CURRENT USER
 router.get('/current', passport.authenticate('jwt', {
   session: false
 }), (req, res) => {
