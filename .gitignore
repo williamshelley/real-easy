@@ -1,5 +1,4 @@
 /*.hidden.txt
 /node_modules
-/config/keys_dev
 /config/keys_dev.js
-config/keys_dev.js
+/real-easy-resources

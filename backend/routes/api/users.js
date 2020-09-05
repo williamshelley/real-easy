@@ -82,6 +82,7 @@ router.post("/login", (req, res) => {
     isValid
   } = validateLoginInput(req.body);
 
+  
   if (!isValid) {
     return res.status(BAD_REQUEST_STATUS).json(errors);
   }
