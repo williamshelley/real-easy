@@ -52,7 +52,7 @@ const SignupComponent = ({ signup, history }) => {
         onChange={e => setPassword2(e.target.value)}
       />
       
-      <input type="submit" value="Login"></input>
+      <input type="submit" value="Sign Up"></input>
 
       <div className="inline-button">
         <p>Already have account?</p>
