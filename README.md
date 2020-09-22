@@ -8,3 +8,6 @@ Backlog:
 - Add backlog wiki page
 - Implement JMeter testing
     - user auth (sign up/in/out)
+
+- Implement SuperTest
+- Break up route functionality for unit tests
