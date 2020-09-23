@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<sample t="0" it="0" lt="0" ct="0" ts="0" s="false" lb="www.google.com:443" rc="" rm="readHandshakeRecord&#xa;**ensure browser is set to accept the JMeter proxy certificate**" tn="" dt="" de="" by="3079" sc="1" ec="1" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String"></responseHeader>
+  <requestHeader class="java.lang.String"></requestHeader>
+  <responseData class="java.lang.String">Non-TEXT response data, cannot record: ()</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <samplerData class="java.lang.String">CONNECT www.google.com:443 HTTP/1.1&#xd;
+</samplerData>
+</sample>
+<sample t="0" it="0" lt="0" ct="0" ts="0" s="false" lb="www.google.com:443" rc="" rm="readHandshakeRecord&#xa;**ensure browser is set to accept the JMeter proxy certificate**" tn="" dt="" de="" by="3079" sc="1" ec="1" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String"></responseHeader>
+  <requestHeader class="java.lang.String"></requestHeader>
+  <responseData class="java.lang.String">Non-TEXT response data, cannot record: ()</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <samplerData class="java.lang.String">CONNECT www.google.com:443 HTTP/1.1&#xd;
+</samplerData>
+</sample>
+
+<sample t="0" it="0" lt="0" ct="0" ts="0" s="false" lb="www.google.com:443" rc="" rm="readHandshakeRecord&#xa;**ensure browser is set to accept the JMeter proxy certificate**" tn="" dt="" de="" by="3148" sc="1" ec="1" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String"></responseHeader>
+  <requestHeader class="java.lang.String"></requestHeader>
+  <responseData class="java.lang.String">Non-TEXT response data, cannot record: ()</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <samplerData class="java.lang.String">CONNECT www.google.com:443 HTTP/1.1&#xd;
+</samplerData>
+</sample>
+<sample t="0" it="0" lt="0" ct="0" ts="0" s="false" lb="www.google.com:443" rc="" rm="readHandshakeRecord&#xa;**ensure browser is set to accept the JMeter proxy certificate**" tn="" dt="" de="" by="3148" sc="1" ec="1" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String"></responseHeader>
+  <requestHeader class="java.lang.String"></requestHeader>
+  <responseData class="java.lang.String">Non-TEXT response data, cannot record: ()</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <samplerData class="java.lang.String">CONNECT www.google.com:443 HTTP/1.1&#xd;
+</samplerData>
+</sample>
+
+<sample t="0" it="0" lt="0" ct="0" ts="0" s="false" lb="www.google.com:443" rc="" rm="readHandshakeRecord&#xa;**ensure browser is set to accept the JMeter proxy certificate**" tn="" dt="" de="" by="3148" sc="1" ec="1" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String"></responseHeader>
+  <requestHeader class="java.lang.String"></requestHeader>
+  <responseData class="java.lang.String">Non-TEXT response data, cannot record: ()</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <samplerData class="java.lang.String">CONNECT www.google.com:443 HTTP/1.1&#xd;
+</samplerData>
+</sample>
+<sample t="0" it="0" lt="0" ct="0" ts="0" s="false" lb="www.google.com:443" rc="" rm="readHandshakeRecord&#xa;**ensure browser is set to accept the JMeter proxy certificate**" tn="" dt="" de="" by="3148" sc="1" ec="1" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String"></responseHeader>
+  <requestHeader class="java.lang.String"></requestHeader>
+  <responseData class="java.lang.String">Non-TEXT response data, cannot record: ()</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <samplerData class="java.lang.String">CONNECT www.google.com:443 HTTP/1.1&#xd;
+</samplerData>
+</sample>
+
+<httpSample t="83" it="0" lt="83" ct="45" ts="1600792085375" s="true" lb="/complete/search-72" rc="200" rm="OK" tn="" dt="text" de="UTF-8" by="803" sc="1" ec="0" ng="0" na="0" hn="Williams-MacBook-Pro.local">
+  <responseHeader class="java.lang.String">HTTP/1.1 200 OK
+Date: Tue, 22 Sep 2020 16:28:05 GMT
+Pragma: no-cache
+Expires: -1
+Cache-Control: no-cache, must-revalidate
+Content-Type: text/javascript; charset=UTF-8
+Strict-Transport-Security: max-age=31536000
+Content-Disposition: attachment; filename=&quot;f.txt&quot;
+Server: gws
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+Transfer-Encoding: chunked
+Alt-Svc: h3-Q050=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000,h3-27=&quot;:443&quot;; ma=2592000,h3-T051=&quot;:443&quot;; ma=2592000,h3-T050=&quot;:443&quot;; ma=2592000,h3-Q046=&quot;:443&quot;; ma=2592000,h3-Q043=&quot;:443&quot;; ma=2592000,quic=&quot;:443&quot;; ma=2592000; v=&quot;46,43&quot;
+Connection: close
+Content-Encoding: br
+</responseHeader>
+  <requestHeader class="java.lang.String">Connection: close
+Accept-Language: en-US,en;q=0.5
+Host: www.google.com
+Accept-Encoding: gzip, deflate, br
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:81.0) Gecko/20100101 Firefox/81.0
+Accept: */*
+</requestHeader>
+  <responseData class="java.lang.String">[&quot;lo&quot;,[&quot;lowes&quot;,&quot;louis vuitton&quot;,&quot;lowes near me&quot;,&quot;lovecraft country&quot;,&quot;lord and taylor&quot;,&quot;loft&quot;,&quot;lowes hours&quot;,&quot;loan calculator&quot;,&quot;lowes credit card&quot;,&quot;lobotomy&quot;],[],{&quot;google:suggestsubtypes&quot;:[[433],[],[433],[433,131],[433],[433],[],[433],[],[433,131]]}]</responseData>
+  <responseFile class="java.lang.String"></responseFile>
+  <cookies class="java.lang.String"></cookies>
+  <method class="java.lang.String">GET</method>
+  <queryString class="java.lang.String"></queryString>
+  <java.net.URL>https://www.google.com/complete/search?client=firefox&amp;q=lo</java.net.URL>
+</httpSample>
+
+
+
+
+</testResults>
