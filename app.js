@@ -2,6 +2,7 @@ const passport = require('passport');
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
+const users = require("./backend/routes/api/users").router;
 
 const app = express();
 
@@ -11,7 +12,6 @@ mongoose
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch(err => console.log(err));
 
-const users = require("./backend/routes/api/users");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -36,3 +36,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
+
+module.exports = {
+  app
+};

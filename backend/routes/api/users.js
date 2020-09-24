@@ -31,9 +31,46 @@ const backendUser = user => {
   return data;
 }
 
-// SIGN UP USER
-router.post("/signup", (req, res) => {
-  const {
+const signAndSendToken = (res, payload) => {
+  jwt.sign(payload, keys.secretOrKey, {
+    expiresIn: TOKEN_EXPIRE_TIME
+  }, (err, token) => {
+    res.json({
+      success: true,
+      token: "Bearer " + token
+    });
+  });
+}
+
+const signupUser = ({ res, user }) => {
+  bcrypt.genSalt(SALT_LENGTH, (_, salt) => {
+    bcrypt.hash(user.password, salt, (err, hash) => {
+      if (err) { throw err; }
+      user.password = hash;
+      user.save()
+        .then(user => {
+          let payload = frontendUser(user);
+          signAndSendToken(res, payload);
+        })
+        .catch(err => res.status(BAD_REQUEST_STATUS).json(err));
+    });
+  });
+}
+
+const loginUser = ({ res, password, user, errors = {} }) => {
+  bcrypt.compare(password, user.password).then(isMatch => {
+    if (isMatch) {
+      let payload = frontendUser(user);
+      signAndSendToken(res, payload);
+    } else {
+      errors.password = BAD_PASSWORD_MESSAGE;
+      return res.status(BAD_REQUEST_STATUS).json(errors);
+    }
+  });
+}
+
+const authenticateSignup = (req, res) => {
+  let {
     errors,
     isValid
   } = validateSignupInput(req.body);
@@ -50,71 +87,44 @@ router.post("/signup", (req, res) => {
       return res.status(BAD_REQUEST_STATUS).json(errors);
     } else {
       const newUser = new User(backendUser(req.body));
-      bcrypt.genSalt(SALT_LENGTH, (error, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser.save()
-            .then(user => {
-              const payload = frontendUser(user);
-
-              jwt.sign(payload, keys.secretOrKey, {
-                expiresIn: TOKEN_EXPIRE_TIME
-              }, (err, token) => {
-                res.json({
-                  success: true,
-                  token: "Bearer " + token
-                });
-              });
-            })
-            .catch(err => res.status(BAD_REQUEST_STATUS).json(err));
-        });
-      });
+      signupUser({ res, user: newUser });
     }
   });
-});
+}
 
-
-// LOG IN USER
-router.post("/login", (req, res) => {
-  const {
+const authenticateLogin = (req, res) => {
+  let {
     errors,
     isValid
   } = validateLoginInput(req.body);
-
   
   if (!isValid) {
     return res.status(BAD_REQUEST_STATUS).json(errors);
   }
 
-  const { email, password } = req.body;
+  let { email, password } = req.body;
 
   User.findOne({
     email
   }).then(user => {
     if (!user) {
-      errors.handle = NOT_USER_EXISTS_MESSAGE;
+      errors.email = NOT_USER_EXISTS_MESSAGE;
       return res.status(BAD_REQUEST_STATUS).json(errors);
     }
 
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        const payload = frontendUser(user);
-
-        jwt.sign(payload, keys.secretOrKey, {
-          expiresIn: TOKEN_EXPIRE_TIME
-        }, (err, token) => {
-          res.json({
-            success: true,
-            token: "Bearer " + token
-          });
-        });
-      } else {
-        errors.password = BAD_PASSWORD_MESSAGE;
-        return res.status(BAD_REQUEST_STATUS).json(errors);
-      }
-    });
+    loginUser({ res, password, user, errors })
   });
+}
+
+// SIGN UP USER
+router.post("/signup", (req, res) => {
+  authenticateSignup(req, res);
+});
+
+
+// LOG IN USER
+router.post("/login", (req, res) => {
+  authenticateLogin(req, res);
 });
 
 
@@ -125,4 +135,13 @@ router.get('/current', passport.authenticate('jwt', {
   res.json(frontendUser(req.user));
 })
 
-module.exports = router;
+module.exports = {
+  router,
+  frontendUser,
+  backendUser,
+  signAndSendToken,
+  signupUser,
+  loginUser,
+  authenticateSignup,
+  authenticateLogin
+};
