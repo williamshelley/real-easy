@@ -15,6 +15,10 @@ const USER_EXISTS_MESSAGE = "User already exists";
 const NOT_USER_EXISTS_MESSAGE = "User does not exist";
 const BAD_PASSWORD_MESSAGE = "Invalid Password";
 
+router.get('/', function (req, res, next) {
+  return res.send("<h1>Testing</h1>");
+});
+
 const frontendUser = user => {
   return {
     id: user.id,
