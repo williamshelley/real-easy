@@ -1,7 +1,6 @@
 const Validator = require('validator');
+const { USER_TYPES, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH } = require('../constants/user-auth-constants');
 const { validText, validDate } = require('./validitation-helpers');
-const MIN_PASSWORD_LENGTH = 6;
-const MAX_PASSWORD_LENGTH = 30;
 
 module.exports = function validateSignupInput(data) {
   let errors = {};
@@ -12,6 +11,7 @@ module.exports = function validateSignupInput(data) {
 
   data.name = validText(data.name) ? data.name : '';
   data.birthDate = validDate(data.birthDate) ? new Date(data.birthDate) : null;
+  data.type = validText(data.type) ? data.type : '';
 
   if (Validator.isEmpty(data.email)) {
     errors.email = 'Email field is required';
@@ -45,6 +45,10 @@ module.exports = function validateSignupInput(data) {
 
   if (!data.birthDate) {
     errors.date = "Birth date is invalid";
+  }
+
+  if (!USER_TYPES[data.type]) {
+    errors.userType = "Invalid user type";
   }
 
   return {

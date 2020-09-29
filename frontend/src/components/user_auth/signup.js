@@ -3,12 +3,23 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { signup } from "../../actions/session_actions";
 
+const path = require("path");
+// const { USER_AUTH } = require(`${process.env.PUBLIC_URL}/backend-constants`);
+
+// const { USER_TYPES } = require("../../../../backend/constants");
+
 const SignupComponent = ({ signup, history }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [password2, setPassword2] = React.useState("");
   const [name, setName] = React.useState("");
   const [birthDate, setBirthDate] = React.useState(new Date());
+  // const [userType, setUserType] = React.useState("");
+
+  // console.log(USER_AUTH.USER_TYPES);
+
+
+  console.log(path.resolve(__dirname, "../../../../"));
 
   const _onSubmit = function(event) {
     event.preventDefault();
@@ -37,6 +48,11 @@ const SignupComponent = ({ signup, history }) => {
         value={email} 
         onChange={e => setEmail(e.target.value)}
       />
+
+      {/* <select value={this.state.value} onChange={this.handleChange}>
+        <option value={}>Grapefruit</option>
+        <option value={}>Lime</option>
+      </select> */}
 
       <input 
         type="password"

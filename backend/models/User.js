@@ -26,6 +26,9 @@ const UserSchema = new Schema({
     about: {
       type: String,
       maxlength: SMALL_MAX_LENGTH
+    },
+    type: {
+      type: String
     }
   }, {
     timestamps: true
