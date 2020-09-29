@@ -11,6 +11,8 @@ module.exports = function validateSignupInput(data) {
 
   data.name = validText(data.name) ? data.name : '';
   data.birthDate = validDate(data.birthDate) ? new Date(data.birthDate) : null;
+
+  debugger;
   data.type = validText(data.type) ? data.type : '';
 
   if (Validator.isEmpty(data.email)) {
@@ -48,7 +50,7 @@ module.exports = function validateSignupInput(data) {
   }
 
   if (!USER_TYPES[data.type]) {
-    errors.userType = "Invalid user type";
+    errors.type = "Invalid user type";
   }
 
   return {
