@@ -11,8 +11,6 @@ module.exports = function validateSignupInput(data) {
 
   data.name = validText(data.name) ? data.name : '';
   data.birthDate = validDate(data.birthDate) ? new Date(data.birthDate) : null;
-
-  debugger;
   data.type = validText(data.type) ? data.type : '';
 
   if (Validator.isEmpty(data.email)) {
