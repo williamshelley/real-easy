@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { findMergeOneUser, setFocusedUser } from "../../actions/user_actions";
+import { findOneUser, mergeOneUser, setFocusedUser } from "../../actions/user_actions";
 import { selectCurrentUser, selectFocusedUser, selectUser } from "../../selectors/user_selectors";
 
 class UserProfileComponent extends React.Component {
@@ -10,34 +10,33 @@ class UserProfileComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { userId } = this.props.match.params;
-    const { currentUser } = this.props;
-    // console.log(currentUser);
-    // console.log(userId);
-    if (currentUser && userId && currentUser.id !== userId) {
-      console.log("should check if user has already been fetched, if not, then fetch user -- user_profile.js");
-      this.props.findUser(userId).then(action => {
-        this.props.setFocusedUser(action.user);
-      });
+    const { currentUser, ownerId } = this.props;
+    if (currentUser && ownerId && currentUser.id !== ownerId) {
+      // if user is not current user, fetch data from db
+      this.props.findUser(ownerId);
     } else {
-      // console.log(this.props.match);
+      // if user is current user, use data from state
       this.props.setFocusedUser(currentUser);
     }
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
-    const { currentUser, profileOwner } = this.props;
-    const newOwner = newProps.profileOwner;
+    const { currentUser, ownerId } = this.props;
+    // const newOwner = newProps.profileOwner;
+    const newOwnerId = newProps.ownerId;
     
-    if (newOwner && profileOwner && profileOwner.id !== newOwner.id) {
-      if (newOwner.id === currentUser.id) {
+    // console.log(newOwner, currentUser);
+    // const isNew = newOwner && profileOwner && profileOwner.id !== newOwner.id;
+
+    if (ownerId && newOwnerId && ownerId !== newOwnerId) {
+      if (newOwnerId=== currentUser.id) {
         // if user is the currentUser
         this.props.setFocusedUser(currentUser);
       } else if (false) {
         // if user is somewhere in users already
       } else {
         // fetch user data from id
-        this.props.setFocusedUser(newOwner);
+        this.props.findUser(newOwnerId)
       }
     }
   }
@@ -67,9 +66,8 @@ class UserProfileComponent extends React.Component {
 }
 
 const msp = (state, ownProps) => {
-  // console.log(selectUser(ownProps.match.params.userId, state));
   return {
-    profileOwner: selectUser(ownProps.match.params.userId, state),
+    ownerId: ownProps.match.params.userId,
     focusedUser: selectFocusedUser(state),
     currentUser: selectCurrentUser(state),
   };
@@ -78,7 +76,7 @@ const msp = (state, ownProps) => {
 const mdp = dispatch => {
   return {
     setFocusedUser: user => dispatch(setFocusedUser(user)),
-    findUser: id => dispatch(findMergeOneUser(id))
+    findUser: id => dispatch(findOneUser(id, setFocusedUser))
   }
 };
 

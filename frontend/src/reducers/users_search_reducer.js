@@ -1,21 +1,21 @@
 import { merge } from "lodash";
-import { MERGE_SEARCH_USERS, SET_SEARCH_USERS, MERGE_ONE_SEARCH_USER, SET_ONE_SEARCH_USER } from "../actions/user_actions";
+import { MERGE_MANY_USERS_SEARCH, SET_MANY_USERS_SEARCH, MERGE_ONE_USER_SEARCH, SET_ONE_USER_SEARCH } from "../actions/user_search_actions";
 
-const usersReducer = (state = {}, action) => {
+const usersSearchReducer = (state = {}, action) => {
   Object.freeze(state);
   let newState = merge({}, state);
   switch(action.type) {
-    case MERGE_SEARCH_USERS:
+    case MERGE_MANY_USERS_SEARCH:
       return merge({}, newState, action.users);
-    case SET_SEARCH_USERS:
+    case SET_MANY_USERS_SEARCH:
       return action.users;
-    case MERGE_ONE_SEARCH_USER:
+    case MERGE_ONE_USER_SEARCH:
       return merge({}, newState, { [action.user.id]: action.user });
-    case SET_ONE_SEARCH_USER:
+    case SET_ONE_USER_SEARCH:
       return merge({}, { [action.user.id]: action.user });
     default: 
       return newState;
   }
 }
 
-export default usersReducer;
+export default usersSearchReducer;

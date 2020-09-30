@@ -2,6 +2,13 @@
   flex-direction: column;
 
   header {
+    flex-direction: column;
     justify-content: space-between;
+  }
+
+  section {
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
 }

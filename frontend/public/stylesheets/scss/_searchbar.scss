@@ -1,12 +1,17 @@
 .searchbar {
   position: relative;
+
+  input {
+    height: 100%;
+  }
+
   ul {
     position: absolute;
     top: 100%;
 
     height: fit-content;
 
+    background-color: rgb(255, 236, 130);
 
-    background-color: gray;
   }
 }
