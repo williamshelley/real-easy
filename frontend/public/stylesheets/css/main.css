@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box; }
+
+body, main, html, div, section, header, h1, h2, h3, p, form, input, button, nav, select {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
+
+main, body, form, section {
+  flex-direction: column; }
+
+main, body, div, form, header, section, nav {
+  display: flex; }
+
+main, body {
+  width: 100vw;
+  height: 100vh; }
+
+header {
+  align-items: center;
+  justify-content: center;
+  width: 100%; }
+
+div {
+  width: 100%;
+  height: 100%; }
+
+input[type=date], select {
+  min-height: 33px; }
+
+button, input[type=submit] {
+  border-radius: 8px;
+  padding: 2px 14px;
+  border: none; }
+
+button:hover, input[type=submit]:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1); }
+
+nav.navbar {
+  padding: 0 3%;
+  align-items: center;
+  justify-content: flex-end;
+  height: 7%; }
+  nav.navbar * {
+    width: fit-content;
+    height: 50%;
+    padding: 2px 14px; }
+
+.main-content {
+  flex-direction: column;
+  padding: 3%;
+  align-items: center;
+  justify-content: center; }
+  .main-content > header {
+    margin-bottom: 4%; }
+
+form.login, form.signup {
+  width: 100%;
+  max-width: 450px;
+  padding: 3%;
+  gap: 5%; }
+  form.login input, form.signup input {
+    padding: 2% 3%; }
+
+.profile {
+  flex-direction: column; }
+  .profile header {
+    justify-content: space-between; }
+
+/*# sourceMappingURL=main.css.map */

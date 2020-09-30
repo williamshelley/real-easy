@@ -12,7 +12,6 @@ class UserProfileComponent extends React.Component {
     if (userId && currentUser.id === userId) {
       console.log("should check if user has already been fetched, if not, then fetch user -- user_profile.js");
     } else {
-      console.log(`set focused user to ${currentUser.id} user -- user_profile.js`);
       this.props.setFocusedUser(currentUser);
     }
   }

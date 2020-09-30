@@ -3,7 +3,7 @@ const app = require("../server.config");
 const supertest = require("supertest");
 const expect = require("expect");
 const User = require("../backend/models/User");
-const { frontendUser, backendUser, signupUser, authenticateSignup } = require("../backend/routes/api/users");
+const { frontendUser, backendUser, signupUser } = require("../backend/routes/api/users");
 
 describe("User Auth", () => {
   let request, testUser;

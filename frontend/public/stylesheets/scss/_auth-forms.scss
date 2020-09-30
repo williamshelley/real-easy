@@ -1,0 +1,15 @@
+@import "./constants";
+
+
+form.login, form.signup {
+  width: 100%;
+  max-width: 450px;
+
+  padding: $large-content-padding;
+
+  gap: 5%;
+
+  input {
+    padding: 2% 3%;
+  }
+}

@@ -1,0 +1,15 @@
+@import "./constants";
+
+nav.navbar {
+  padding: 0 $large-content-padding;
+  align-items: center;
+  justify-content: flex-end;
+  height: $navbar-height;
+
+  * {
+    width: fit-content;
+    height: $navbar-item-height;
+    
+    padding: $small-btn-padding;
+  }
+}

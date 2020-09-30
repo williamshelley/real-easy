@@ -13,7 +13,7 @@ const LoginComponent = ({ login, history }) => {
   }
 
   return (
-    <form onSubmit={_onSubmit}>
+    <form onSubmit={_onSubmit} className="login">
       <input 
         type="text"
         placeholder="Email" 

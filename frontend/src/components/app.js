@@ -11,11 +11,15 @@ import { selectCurrentUser } from "../selectors/user_selectors";
 const AppComponent = () => {
   return (
     <>
-      <header>
-        Header
+      {/* <nav className="navbar"> */}
         <ProtectedRoute path="/" component={LogoutModal} />
-      </header>
+      {/* </nav> */}
+
       <div className="main-content">
+        <header>
+          <h1>Real Easy -- Dev</h1>
+        </header>
+
         <Switch>
           <AuthRoute path="/signup" component={SignupModal} />
           <AuthRoute path="/login" component={LoginModal} />

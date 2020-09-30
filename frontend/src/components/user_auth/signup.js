@@ -23,7 +23,7 @@ const SignupComponent = ({ signup, history }) => {
   }
 
   return (
-    <form onSubmit={_onSubmit}>
+    <form onSubmit={_onSubmit} className="signup">
       <input 
         type="text"
         placeholder="Name" 
@@ -32,24 +32,11 @@ const SignupComponent = ({ signup, history }) => {
       />
 
       <input 
-        type="date"
-        placeholder="Birthday" 
-        value={birthDate} 
-        onChange={e => setBirthDate(e.target.value)}
-      />
-
-      <input 
         type="text"
         placeholder="Email" 
         value={email} 
         onChange={e => setEmail(e.target.value)}
       />
-
-      <select value={accountType} onChange={e => setAccountType(e.target.value)}>
-        <option disabled value={""}>--Select a account type--</option>
-        <option value={SERVICE_PROVIDER}>{serviceProvider}</option>
-        <option value={CLIENT}>{client}</option>
-      </select>
 
       <input 
         type="password"
@@ -63,6 +50,19 @@ const SignupComponent = ({ signup, history }) => {
         placeholder="Confirm password" 
         value={password2} 
         onChange={e => setPassword2(e.target.value)}
+      />
+
+      <select value={accountType} onChange={e => setAccountType(e.target.value)}>
+        <option disabled value={""}>--Select a account type--</option>
+        <option value={SERVICE_PROVIDER}>{serviceProvider}</option>
+        <option value={CLIENT}>{client}</option>
+      </select>
+
+      <input 
+        type="date"
+        placeholder="Birthday" 
+        value={birthDate} 
+        onChange={e => setBirthDate(e.target.value)}
       />
       
       <input type="submit" value="Sign Up"></input>
