@@ -16,6 +16,7 @@ const LoginComponent = ({ login, history }) => {
     <form onSubmit={_onSubmit} className="login">
       <input 
         type="text"
+        autoComplete="on"
         placeholder="Email" 
         value={email} 
         onChange={e => setEmail(e.target.value)}
@@ -23,16 +24,17 @@ const LoginComponent = ({ login, history }) => {
 
       <input 
         type="password"
+        autoComplete="on"
         placeholder="Password" 
         value={password} 
         onChange={e => setPassword(e.target.value)}
       />
       
-      <input type="submit" value="Login"></input>
+      <input type="submit" value="Login"/>
 
       <div className="inline-button">
         <p>Don't have account?</p>
-        <button onClick={() => history.push("/signup")}>Signup</button>
+        <button type="button" onClick={() => history.push("/signup")}>Sign Up</button>
       </div>
     </form>
   );

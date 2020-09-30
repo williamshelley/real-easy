@@ -1,17 +1,17 @@
 import { merge } from "lodash";
-import { MERGE_ONE_USER, MERGE_USERS, SET_ONE_USER, SET_USERS } from "../actions/user_actions";
+import { MERGE_SEARCH_USERS, SET_SEARCH_USERS, MERGE_ONE_SEARCH_USER, SET_ONE_SEARCH_USER } from "../actions/user_actions";
 
 const usersReducer = (state = {}, action) => {
   Object.freeze(state);
   let newState = merge({}, state);
   switch(action.type) {
-    case MERGE_USERS:
+    case MERGE_SEARCH_USERS:
       return merge({}, newState, action.users);
-    case SET_USERS:
+    case SET_SEARCH_USERS:
       return action.users;
-    case MERGE_ONE_USER:
+    case MERGE_ONE_SEARCH_USER:
       return merge({}, newState, { [action.user.id]: action.user });
-    case SET_ONE_USER:
+    case SET_ONE_SEARCH_USER:
       return merge({}, { [action.user.id]: action.user });
     default: 
       return newState;

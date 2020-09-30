@@ -10,14 +10,11 @@ const validateSignupInput = require('../../validation/signup');
 const validateLoginInput = require('../../validation/login');
 const { BAD_REQUEST_STATUS } = require('../../constants/error-constants');
 const { TOKEN_EXPIRE_TIME, SALT_LENGTH } = require('../../constants/user-auth-constants');
+const { Types } = require('mongoose');
 
 const USER_EXISTS_MESSAGE = "User already exists";
 const NOT_USER_EXISTS_MESSAGE = "User does not exist";
 const BAD_PASSWORD_MESSAGE = "Invalid Password";
-
-router.get('/', function (req, res, next) {
-  return res.send("<h1>Testing</h1>");
-});
 
 const frontendUser = user => {
   return {
@@ -125,6 +122,68 @@ const authenticateLogin = (req, res) => {
     loginUser({ res, password, user, errors });
   });
 }
+
+const buildSearchParams = filters => {
+  let searchParams = {};
+
+  const { name } = filters;
+  if (name && name.length > 0) {
+    searchParams.name = { $regex: name, $options: 'i' };
+  }
+
+  return Object.keys(searchParams).length > 0 ? searchParams : undefined;
+}
+
+const findUsers = (req, res) => {
+  let { filters } = req.body;
+
+  const searchParams = buildSearchParams(filters);
+
+  let responseObj = {};
+
+  if (searchParams) {
+    User.find(searchParams).then(users => {
+      if (users) {
+        users.forEach(user => {
+          let fe = frontendUser(user);
+          responseObj[fe.id] = fe;
+        });
+      }
+      
+      return res.json(responseObj);
+    });
+  } else {
+    res.json(responseObj);
+  }
+}
+
+const findUser = (req, res) => {
+  let { userId } = req.params;
+
+  User.findOne({ _id: Types.ObjectId(userId) })
+    .then(user => {
+      if (user) {
+        return res.json(frontendUser(user ));
+      } else {
+        return res.status(BAD_REQUEST_STATUS).json(NOT_USER_EXISTS_MESSAGE);
+      }
+    })
+    .catch(errors => {
+      if (errors) {
+        return res.status(BAD_REQUEST_STATUS).json(errors);
+      }
+    });
+}
+
+// RETRIEVE USERS WITH FILTERS
+router.post("/", (req, res) => {
+  findUsers(req, res);
+});
+
+// RETRIEVE ONE USER WITH ID
+router.get("/:userId", (req, res) => {
+  findUser(req, res);
+});
 
 // SIGN UP USER
 router.post("/signup", (req, res) => {

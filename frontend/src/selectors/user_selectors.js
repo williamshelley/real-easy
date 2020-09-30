@@ -9,3 +9,7 @@ export const selectFocusedUser = state => {
 export const selectAllUsers = state => {
   return state.entities.users;
 }
+
+export const selectUser = (id, state) => {
+  return state.entities.users[id];
+}

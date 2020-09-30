@@ -18,7 +18,7 @@ const SignupComponent = ({ signup, history }) => {
   let serviceProvider = "Service Provider";
 
   const _onSubmit = function(event) {
-    event.preventDefault();
+    // event.preventDefault();
     signup({ email, password, password2, name, birthDate, accountType });
   }
 
@@ -26,6 +26,7 @@ const SignupComponent = ({ signup, history }) => {
     <form onSubmit={_onSubmit} className="signup">
       <input 
         type="text"
+        autoComplete="on"
         placeholder="Name" 
         value={name} 
         onChange={e => setName(e.target.value)}
@@ -33,6 +34,7 @@ const SignupComponent = ({ signup, history }) => {
 
       <input 
         type="text"
+        autoComplete="on"
         placeholder="Email" 
         value={email} 
         onChange={e => setEmail(e.target.value)}
@@ -40,6 +42,7 @@ const SignupComponent = ({ signup, history }) => {
 
       <input 
         type="password"
+        autoComplete="on"
         placeholder="Password" 
         value={password} 
         onChange={e => setPassword(e.target.value)}
@@ -47,6 +50,7 @@ const SignupComponent = ({ signup, history }) => {
 
       <input 
         type="password"
+        autoComplete="on"
         placeholder="Confirm password" 
         value={password2} 
         onChange={e => setPassword2(e.target.value)}
@@ -60,16 +64,17 @@ const SignupComponent = ({ signup, history }) => {
 
       <input 
         type="date"
+        autoComplete="on"
         placeholder="Birthday" 
         value={birthDate} 
         onChange={e => setBirthDate(e.target.value)}
       />
       
-      <input type="submit" value="Sign Up"></input>
+      <input type="submit" value="Sign Up" />
 
       <div className="inline-button">
         <p>Already have account?</p>
-        <button onClick={() => history.push("/login")}>Login</button>
+        <button type="button" onClick={() => history.push("/login")}>Login</button>
       </div>
     </form>
   );

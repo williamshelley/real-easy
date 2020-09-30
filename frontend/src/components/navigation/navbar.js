@@ -1,10 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { logout } from "../../actions/session_actions";
+import UserSearchbar from "../search/user_search_bar";
 
-const LogoutComponent = ({ logout }) => {
+const NavbarComponent = ({ logout }) => {
+
   return (
     <nav className="navbar">
+      <UserSearchbar />
       <button onClick={() => logout()}>Logout</button>
     </nav>
   );
@@ -17,6 +20,6 @@ const mdp = dispatch => {
   }
 }
 
-const LogoutModal = connect(null, mdp)(LogoutComponent);
+const Navbar = connect(null, mdp)(NavbarComponent);
 
-export default LogoutModal;
+export default Navbar;

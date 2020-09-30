@@ -1,33 +1,61 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setFocusedUser } from "../../actions/user_actions";
-import { selectCurrentUser, selectFocusedUser } from "../../selectors/user_selectors";
+import { findMergeOneUser, setFocusedUser } from "../../actions/user_actions";
+import { selectCurrentUser, selectFocusedUser, selectUser } from "../../selectors/user_selectors";
 
 class UserProfileComponent extends React.Component {
 
+  setUser(user) {
+
+  }
+
   componentDidMount() {
-    // fetch user
     const { userId } = this.props.match.params;
     const { currentUser } = this.props;
-    if (userId && currentUser.id === userId) {
+    // console.log(currentUser);
+    // console.log(userId);
+    if (currentUser && userId && currentUser.id !== userId) {
       console.log("should check if user has already been fetched, if not, then fetch user -- user_profile.js");
+      this.props.findUser(userId).then(action => {
+        this.props.setFocusedUser(action.user);
+      });
     } else {
+      // console.log(this.props.match);
       this.props.setFocusedUser(currentUser);
     }
   }
 
+  UNSAFE_componentWillReceiveProps(newProps) {
+    const { currentUser, profileOwner } = this.props;
+    const newOwner = newProps.profileOwner;
+    
+    if (newOwner && profileOwner && profileOwner.id !== newOwner.id) {
+      if (newOwner.id === currentUser.id) {
+        // if user is the currentUser
+        this.props.setFocusedUser(currentUser);
+      } else if (false) {
+        // if user is somewhere in users already
+      } else {
+        // fetch user data from id
+        this.props.setFocusedUser(newOwner);
+      }
+    }
+  }
+
   render() {
-    const { profileOwner } = this.props;
+    const { focusedUser } = this.props;
+
+    // console.log(focusedUser);
 
     const capitalized = accountType => {
       return accountType[0].toUpperCase() + accountType.toLowerCase().slice(1);
     }
 
-    return profileOwner ? (
+    return focusedUser ? (
       <div className="profile">
         <header>
-          <h2>{profileOwner.name} - {capitalized(profileOwner.accountType)}</h2>
-          <p>Born on {profileOwner.birthDate}</p>
+          <h2>{focusedUser.name} - {capitalized(focusedUser.accountType)}</h2>
+          <p>Born on {focusedUser.birthDate}</p>
         </header>
 
         <section>
@@ -38,9 +66,11 @@ class UserProfileComponent extends React.Component {
   }
 }
 
-const msp = state => {
+const msp = (state, ownProps) => {
+  // console.log(selectUser(ownProps.match.params.userId, state));
   return {
-    profileOwner: selectFocusedUser(state),
+    profileOwner: selectUser(ownProps.match.params.userId, state),
+    focusedUser: selectFocusedUser(state),
     currentUser: selectCurrentUser(state),
   };
 };
@@ -48,6 +78,7 @@ const msp = state => {
 const mdp = dispatch => {
   return {
     setFocusedUser: user => dispatch(setFocusedUser(user)),
+    findUser: id => dispatch(findMergeOneUser(id))
   }
 };
 
