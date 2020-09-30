@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { USER_TYPES } = require('../constants/user-auth-constants');
 mongoose.set('useCreateIndex', true)
 const Schema = mongoose.Schema;
 
@@ -27,8 +28,9 @@ const UserSchema = new Schema({
       type: String,
       maxlength: SMALL_MAX_LENGTH
     },
-    type: {
-      type: String
+    accountType: {
+      type: String,
+      default: USER_TYPES.CLIENT
     }
   }, {
     timestamps: true

@@ -23,8 +23,10 @@ const frontendUser = user => {
   return {
     id: user.id,
     name: user.name,
+    email: user.email,
     birthDate: user.birthDate,
-    about: user.about
+    about: user.about,
+    accountType: user.accountType
   }
 }
 
@@ -46,16 +48,20 @@ const signAndSendToken = (res, payload) => {
   });
 }
 
-const signupUser = ({ res, user }) => {
+// callback is run after user is saved to db, defaults to sending response to server
+const signupUser = ({ res, user, callback }) => {
+  const defaultCallback = user => {
+    let payload = frontendUser(user);
+        signAndSendToken(res, payload);
+  }
+  callback = callback ? callback : defaultCallback;
+
   bcrypt.genSalt(SALT_LENGTH, (_, salt) => {
     bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) { throw err; }
       user.password = hash;
       user.save()
-        .then(user => {
-          let payload = frontendUser(user);
-          signAndSendToken(res, payload);
-        })
+        .then(callback)
         .catch(err => res.status(BAD_REQUEST_STATUS).json(err));
     });
   });
@@ -116,7 +122,7 @@ const authenticateLogin = (req, res) => {
       return res.status(BAD_REQUEST_STATUS).json(errors);
     }
 
-    loginUser({ res, password, user, errors })
+    loginUser({ res, password, user, errors });
   });
 }
 
@@ -147,5 +153,5 @@ module.exports = {
   signupUser,
   loginUser,
   authenticateSignup,
-  authenticateLogin
+  authenticateLogin,
 };

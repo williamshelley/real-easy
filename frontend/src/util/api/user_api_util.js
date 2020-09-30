@@ -1,0 +1,1 @@
+// fetch user of id 'hash'

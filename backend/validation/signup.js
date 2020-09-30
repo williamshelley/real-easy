@@ -11,7 +11,7 @@ module.exports = function validateSignupInput(data) {
 
   data.name = validText(data.name) ? data.name : '';
   data.birthDate = validDate(data.birthDate) ? new Date(data.birthDate) : null;
-  data.type = validText(data.type) ? data.type : '';
+  data.accountType = validText(data.accountType) ? data.accountType : '';
 
   if (Validator.isEmpty(data.email)) {
     errors.email = 'Email field is required';
@@ -47,8 +47,8 @@ module.exports = function validateSignupInput(data) {
     errors.date = "Birth date is invalid";
   }
 
-  if (!USER_TYPES[data.type]) {
-    errors.type = "Invalid user type";
+  if (!USER_TYPES[data.accountType]) {
+    errors.accountType = "Invalid user type";
   }
 
   return {
