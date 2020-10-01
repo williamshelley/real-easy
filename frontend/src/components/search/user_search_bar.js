@@ -14,8 +14,8 @@ const UserSearchbarComponent = ({ users, findUsers, clearUsers }) => {
 
   const clearSearch = e => {
     e.preventDefault();
-    clearUsers();
-    setName("");
+    // clearUsers();
+    // setName("");
   }
 
   return (

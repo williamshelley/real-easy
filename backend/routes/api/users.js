@@ -49,7 +49,7 @@ const signAndSendToken = (res, payload) => {
 const signupUser = ({ res, user, callback }) => {
   const defaultCallback = user => {
     let payload = frontendUser(user);
-        signAndSendToken(res, payload);
+    signAndSendToken(res, payload);
   }
   callback = callback ? callback : defaultCallback;
 
@@ -76,6 +76,9 @@ const loginUser = ({ res, password, user, errors = {} }) => {
   });
 }
 
+
+// separate request from backend request
+// instead of passing req/res, just pass in data
 const authenticateSignup = (req, res) => {
   let {
     errors,

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { findOneUser, mergeOneUser, setFocusedUser } from "../../actions/user_actions";
-import { selectCurrentUser, selectFocusedUser, selectUser } from "../../selectors/user_selectors";
+import { findOneUser, setFocusedUser } from "../../actions/user_actions";
+import { selectCurrentUser, selectFocusedUser } from "../../selectors/user_selectors";
 
 class UserProfileComponent extends React.Component {
 

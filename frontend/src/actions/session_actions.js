@@ -9,7 +9,7 @@ export const JWT_TOKEN = "JWT_TOKEN";
 
 const LOGIN_FIELD = "user";
 
-const decode = (response) => {
+const decode = response => {
   const { token } = response.data;
   localStorage.setItem(JWT_TOKEN, token);
   API_UTIL.setAuthToken(token);
@@ -19,7 +19,7 @@ const decode = (response) => {
 
 const loginUser = user => receive(LOGIN_CURRENT_USER, LOGIN_FIELD, user);
 
-const logoutUser = () => clear(LOGIN_CURRENT_USER);
+const logoutUser = () => clear(LOGOUT_CURRENT_USER);
 
 const receiveSessionErrors =  errors => {
   return receive(RECEIVE_SESSION_ERRORS, ERRORS, errors);

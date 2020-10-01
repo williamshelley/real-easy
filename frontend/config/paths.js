@@ -63,6 +63,7 @@ module.exports = {
   appIndexJs: resolveModule(resolveApp, 'src/index'),
   appPackageJson: resolveApp('package.json'),
   // appSrc: resolveApp('src'),
+  // not recommended, but this will move root directory back to 'real-easy' so that files can be accessed outside src directory
   appSrc: resolveApp('../'),
   appTsConfig: resolveApp('tsconfig.json'),
   appJsConfig: resolveApp('jsconfig.json'),
