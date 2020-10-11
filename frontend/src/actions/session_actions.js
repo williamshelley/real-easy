@@ -42,7 +42,9 @@ export const logout = () => dispatch => {
 
 export const signup = user => dispatch => {
   return (API_UTIL.signup(user)
-    .then(res => dispatch(loginUser(decode(res))))
+    .then(res => {
+      return dispatch(loginUser(decode(res)))
+    })
     .catch(err => dispatch(receiveSessionErrors(err.response.data)))
   );
 }

@@ -13,6 +13,10 @@ module.exports = function validateSignupInput(data) {
   data.birthDate = validDate(data.birthDate) ? new Date(data.birthDate) : null;
   data.accountType = validText(data.accountType) ? data.accountType : '';
 
+  data.email = Validator.escape(data.email);
+  data.name = Validator.escape(data.name);
+  data.accountType = Validator.escape(data.accountType);
+
   if (Validator.isEmpty(data.email)) {
     errors.email = 'Email field is required';
   }

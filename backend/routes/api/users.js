@@ -79,40 +79,40 @@ const loginUser = ({ res, password, user, errors = {} }) => {
 
 // separate request from backend request
 // instead of passing req/res, just pass in data
-const authenticateSignup = (req, res) => {
+const authenticateSignup = (body, res) => {
   let {
     errors,
     isValid
-  } = validateSignupInput(req.body);
+  } = validateSignupInput(body);
 
   if (!isValid) {
     return res.status(BAD_REQUEST_STATUS).json(errors);
   }
 
   User.findOne({
-    email: req.body.email
+    email: body.email
   }).then(user => {
     if (user) {
       errors.email = USER_EXISTS_MESSAGE;
       return res.status(BAD_REQUEST_STATUS).json(errors);
     } else {
-      const newUser = new User(backendUser(req.body));
+      const newUser = new User(backendUser(body));
       signupUser({ res, user: newUser });
     }
   });
 }
 
-const authenticateLogin = (req, res) => {
+const authenticateLogin = (body, res) => {
   let {
     errors,
     isValid
-  } = validateLoginInput(req.body);
+  } = validateLoginInput(body);
   
   if (!isValid) {
     return res.status(BAD_REQUEST_STATUS).json(errors);
   }
 
-  let { email, password } = req.body;
+  let { email, password } = body;
 
   User.findOne({
     email
@@ -137,8 +137,8 @@ const buildSearchParams = filters => {
   return Object.keys(searchParams).length > 0 ? searchParams : undefined;
 }
 
-const findUsers = (req, res) => {
-  let { filters } = req.body;
+const findUsers = (filters, res) => {
+  // let { filters } = req.body;
 
   const searchParams = buildSearchParams(filters);
 
@@ -160,8 +160,8 @@ const findUsers = (req, res) => {
   }
 }
 
-const findUser = (req, res) => {
-  let { userId } = req.params;
+const findUser = (userId, res) => {
+  // let { userId } = req.params;
 
   User.findOne({ _id: Types.ObjectId(userId) })
     .then(user => {
@@ -180,23 +180,23 @@ const findUser = (req, res) => {
 
 // RETRIEVE USERS WITH FILTERS
 router.post("/", (req, res) => {
-  findUsers(req, res);
+  findUsers(req.body.filters, res);
 });
 
 // RETRIEVE ONE USER WITH ID
 router.get("/:userId", (req, res) => {
-  findUser(req, res);
+  findUser(req.params.userId, res);
 });
 
 // SIGN UP USER
 router.post("/signup", (req, res) => {
-  authenticateSignup(req, res);
+  authenticateSignup(req.body, res);
 });
 
 
 // LOG IN USER
 router.post("/login", (req, res) => {
-  authenticateLogin(req, res);
+  authenticateLogin(req.body, res);
 });
 
 

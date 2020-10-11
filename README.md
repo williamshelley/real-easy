@@ -2,8 +2,6 @@
 
 Real Estate asset management
 
-Build command: `npm run dev`
-
 Backlog:
 - Add backlog wiki page
 - Implement JMeter testing
@@ -11,3 +9,17 @@ Backlog:
 
 - Implement SuperTest
 - Break up route functionality for unit tests
+
+-----
+
+## Instructions
+
+Install Packages
+```
+npm run full-install
+```
+
+Run
+```
+npm run dev
+```

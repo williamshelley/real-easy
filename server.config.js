@@ -2,7 +2,9 @@ const passport = require('passport');
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
+
 const users = require("./backend/routes/api/users").router;
+const projects = require("./backend/routes/api/projects").router;
 
 const app = express();
 
@@ -21,6 +23,7 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 app.use("/api/users", users);
+app.use("/api/projects", projects)
 
 app.use(express.static("public"));
 
