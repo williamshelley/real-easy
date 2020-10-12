@@ -5,6 +5,7 @@ import Root from './components/root';
 import configureStore from './store/store';
 import { JWT_TOKEN, logout, login } from './actions/session_actions';
 import { setAuthToken } from './util/api/session_api_util';
+import { postNewProject } from './util/api/project_api_util';
 
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.getElementById("root");
@@ -27,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.dispatch = store.dispatch;
   window.login = login;
   window.logout = logout;
+
+  window.postNewProject = postNewProject;
 
   ReactDOM.render(<Root store={store} />, root);
 });

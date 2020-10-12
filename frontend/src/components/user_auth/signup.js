@@ -17,8 +17,7 @@ const SignupComponent = ({ signup, history }) => {
   let client = "Client";
   let serviceProvider = "Service Provider";
 
-  const _onSubmit = function(event) {
-    // event.preventDefault();
+  const _onSubmit = function() {
     signup({ email, password, password2, name, birthDate, accountType });
   }
 

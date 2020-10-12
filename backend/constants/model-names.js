@@ -1,6 +1,8 @@
 const USER = "User";
 const PROJECT = "Project";
+const POSITION = "Position";
 
 module.exports = {
-  USER, PROJECT
+  USER, PROJECT, 
+  POSITION
 }

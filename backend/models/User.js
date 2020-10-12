@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { USER } = require('../constants/model-names');
+const { USER, PROJECT } = require('../constants/model-names');
 const { USER_TYPES } = require('../constants/user-auth-constants');
 mongoose.set('useCreateIndex', true)
 const Schema = mongoose.Schema;
@@ -32,6 +32,10 @@ const UserSchema = new Schema({
     accountType: {
       type: String,
       default: USER_TYPES.CLIENT
+    },
+    projects: {
+      type: [Schema.Types.ObjectId],
+      ref: PROJECT
     }
   }, {
     timestamps: true

@@ -7,6 +7,8 @@ import SignupModal from "./user_auth/signup";
 import UserProfile from "./user/user_profile";
 import { connect } from "react-redux";
 import { selectCurrentUser } from "../selectors/user_selectors";
+import ProjectShow from "./projects/project_show";
+import ProjectCreate from "./projects/project_create";
 
 const AppComponent = () => {
   return (
@@ -21,7 +23,9 @@ const AppComponent = () => {
         <Switch>
           <AuthRoute path="/signup" component={SignupModal} />
           <AuthRoute path="/login" component={LoginModal} />
+          <ProtectedRoute path="/projects/new" component={ProjectCreate} />
           <ProtectedRoute path="/users/:userId" component={UserProfile} />
+          <ProtectedRoute path="/projects/:projectId" component={ProjectShow} />
           <ProtectedRoute exact path="/" component={UserProfile} />
         </Switch>
       </div>
