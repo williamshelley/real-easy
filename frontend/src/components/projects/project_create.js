@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { createProject, mergeOneProject } from "../../actions/project_actions";
+import { selectCurrentUser } from "../../selectors/user_selectors";
 
-const ProjectCreateComponent = ({ history, createProject }) => {
+const ProjectCreateComponent = ({ history, currentUser, createProject }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [positions, setPositions] = useState([]);
+  const [positions, setPositions] = useState([{
+    title: "Project Creator",
+    description: "Project Creator",
+    wage: 1,
+    user: currentUser.id
+  }]);
 
   const _onSubmit = function() {
+    
     createProject({ name, description, positions }).then(() => {
       history.push("/");
     });
@@ -40,7 +47,7 @@ const ProjectCreateComponent = ({ history, createProject }) => {
 
 const msp = state => {
   return {
-    
+    currentUser: selectCurrentUser(state)
   }
 }
 

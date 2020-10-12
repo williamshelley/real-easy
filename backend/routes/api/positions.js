@@ -13,7 +13,7 @@ const frontendPosition = position => {
 const findPositionsOfUser = userId => {
   return Position.find({ user: Types.ObjectId(userId) })
   .then(positions => {
-    if (positions && positions.length > 0) {
+    if (positions && positions.length >= 0) {
       positions = positions.map(pos => frontendPosition(pos));
       let positionsObj = {};
       positions.forEach(pos => {
@@ -26,7 +26,7 @@ const findPositionsOfUser = userId => {
     } else {
       return {
         status: BAD_REQUEST_STATUS,
-        json: { error: "Could not find positions" }
+        json: "Could not find positions" 
       }
     }
   })

@@ -26,28 +26,36 @@ const createProject = async body => {
     body.positions.forEach(position => {
       newPositions.push(new Position(position))
     });
-    return Position.insertMany(newPositions)
-      .then(positions => {
 
-        let newProject = new Project(body);
-
-        newProject.positions = positions.map(pos => pos.id);
-
-      return newProject.save()
-      .then(project => {
-        return {
-          status: 200,
-          json: frontendProject(project)
-        }
-      })
-      .catch(err => {
-        return {
-          status: BAD_REQUEST_STATUS,
-          json: err.errors
-        }
+    let newProject = new Project(body);
+    newProject.positions = [];
+    return newProject.save()
+    .then(project => {
+      // give positions correct project id
+      newPositions = newPositions.map(p => {
+        p.project = project.id;
+        return p;
       });
-    })
 
+      return Position.insertMany(newPositions)
+      .then(positions => {
+        newProject.positions = positions.map(pos => pos.id);
+  
+        return newProject.save()
+        .then(updatedPro => {
+          return {
+            status: 200,
+            json: frontendProject(updatedPro)
+          }
+        })
+        .catch(err => {
+          return {
+            status: BAD_REQUEST_STATUS,
+            json: err.errors
+          }
+        });
+      })
+    })
   }
 }
 

@@ -9,45 +9,58 @@ import { selectCurrentUser, selectFocusedUser } from "../../selectors/user_selec
 
 class UserProfileComponent extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.currentUserSetup = this.currentUserSetup.bind(this);
+    this.newUserSetup = this.newUserSetup.bind(this);
+  }
+
+  currentUserSetup() {
+    const { currentUser } = this.props;
+    // this.props.clear();
+    this.props.findUserProjects(currentUser.id).then(() => {
+      this.props.findUserPositions(currentUser.id).then(() => {
+        this.props.setFocusedUser(currentUser);
+      });
+    });
+  }
+
+  newUserSetup(ownerId) {
+    // this.props.clear();
+    this.props.findUserProjects(ownerId).then(() => {
+      this.props.findUserPositions(ownerId).then(() => {
+        this.props.findUser(ownerId);
+      });
+    });
+  }
+
   componentDidMount() {
+    // this.props.clear();
     const { currentUser, ownerId } = this.props;
     if (currentUser && ownerId && currentUser.id !== ownerId) {
       // if user is not current user, fetch data from db
-      this.props.clear();
-      this.props.findUser(ownerId);
+      this.newUserSetup(ownerId);
     } else {
       // if user is current user, use data from state
-      this.props.findUserProjects(currentUser).then(() => {
-        this.props.findUserPositions(currentUser).then(() => {
-          this.props.setFocusedUser(currentUser);
-        });
-      })
+      this.currentUserSetup();
     }
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     const { currentUser, ownerId } = this.props;
-    // const newOwner = newProps.profileOwner;
     const newOwnerId = newProps.ownerId;
     
-    // console.log(newOwner, currentUser);
-    // const isNew = newOwner && profileOwner && profileOwner.id !== newOwner.id;
-
     if (ownerId && newOwnerId && ownerId !== newOwnerId) {
+      // this.props.clear();
       if (newOwnerId=== currentUser.id) {
         // if user is the currentUser.then(() => {
-          this.props.findUserProjects(currentUser).then(() => {
-            this.props.findUserPositions(currentUser).then(() => {
-              this.props.setFocusedUser(currentUser);
-            });
-          })
+        this.currentUserSetup();
 
       } else if (false) {
         // if user is somewhere in users already
       } else {
         // fetch user data from id
-        this.props.clear();
-        this.props.findUser(newOwnerId)
+        this.newUserSetup(newOwnerId);
       }
     }
   }
@@ -118,9 +131,9 @@ const msp = (state, ownProps) => {
 const mdp = dispatch => {
   return {
     setFocusedUser: user => dispatch(setFocusedUser(user)),
-    findUserProjects: user => dispatch(findManyUserProjects(user.id, setManyProjects)),
+    findUserProjects: userId => dispatch(findManyUserProjects(userId, setManyProjects)),
     findUser: id => dispatch(findOneUser(id, setFocusedUser)),
-    findUserPositions: user => dispatch(findUserPositions(user.id, setManyPositions)),
+    findUserPositions: userId => dispatch(findUserPositions(userId, setManyPositions)),
     clear: () => {
       dispatch(clearPositions());
       dispatch(clearProjects());
