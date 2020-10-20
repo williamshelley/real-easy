@@ -59,6 +59,23 @@ const createProject = async body => {
   }
 }
 
+const editProject = (project, currentUser) => {
+  let {
+    errors,
+    isValid
+  } = validateProject(project);
+
+  if (!isValid) {
+    return {
+      status: BAD_REQUEST_STATUS,
+      json: errors
+    }
+  } else {
+
+  }
+  debugger;
+}
+
 router.get("/:projectId", (req, res) => {
   Project.findOne({ _id: Types.ObjectId(req.params.projectId) })
   .then(project => {
@@ -73,6 +90,11 @@ router.get("/:projectId", (req, res) => {
       return res.status(BAD_REQUEST_STATUS).json(errors);
     }
   })
+});
+
+router.post("/edit", (req, res) => {
+  editProject(req.body.project, req.body.user);
+  res.status(999).json({ placeholder: "Placeholder" });
 });
 
 // gets all projects a user has participated in

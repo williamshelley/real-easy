@@ -9,8 +9,10 @@ import { connect } from "react-redux";
 import { selectCurrentUser } from "../selectors/user_selectors";
 import ProjectShow from "./projects/project_show";
 import ProjectCreate from "./projects/project_create";
+import { renderUI } from "../util/ui_util";
+import { selectUI } from "../selectors/ui_selector";
 
-const AppComponent = () => {
+const AppComponent = ({ ui }) => {
   return (
     <>
       <ProtectedRoute path="/" component={Navbar} />
@@ -28,6 +30,8 @@ const AppComponent = () => {
           <ProtectedRoute path="/projects/:projectId" component={ProjectShow} />
           <ProtectedRoute exact path="/" component={UserProfile} />
         </Switch>
+
+        { renderUI(ui) }
       </div>
     </>
   );
@@ -36,6 +40,7 @@ const AppComponent = () => {
 const msp = state => {
   return {
     currentUser: selectCurrentUser(state),
+    ui: selectUI(state)
   }
 }
 

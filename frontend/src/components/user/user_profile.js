@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { clearPositions, findUserPositions, setManyPositions } from "../../actions/position_actions";
 import { clearProjects, findManyUserProjects, setManyProjects } from "../../actions/project_actions";
 import { findOneUser, setFocusedUser } from "../../actions/user_actions";
@@ -90,10 +91,10 @@ class UserProfileComponent extends React.Component {
           {
             this.props.projects.length > 0 && this.props.projects.map(pro => {
               return (
-                <div key={pro.id} className="project">
+                <Link key={pro.id} className="project" to={`/projects/${pro.id}`}>
                   <h3>{pro.name}</h3>
                   <p>{pro.description}</p>
-                </div>
+                </Link>
               )
             })
           }

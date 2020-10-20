@@ -2,7 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { findOneProject, setOneProject } from "../../actions/project_actions";
+import { pushModal } from "../../actions/ui_actions";
 import { selectOneProject } from "../../selectors/project_selectors";
+import { PROJECT_EDIT_MODAL } from "../../constants/modals";
 
 class ProjectShowComponent extends React.Component {
   componentDidMount() {
@@ -16,6 +18,11 @@ class ProjectShowComponent extends React.Component {
       <div className="project">
         <h1>{project.name}</h1>
         <p>{project.description}</p>
+        <button onClick={() => {
+          this.props.pushModal(project);
+        }}>
+          Edit Project
+        </button>
       </div>
     ) : null;
   }
@@ -29,7 +36,8 @@ const msp = (state, ownProps) => {
 
 const mdp = dispatch => {
   return {
-    findProject: projectId => dispatch(findOneProject(projectId, setOneProject))
+    findProject: projectId => dispatch(findOneProject(projectId, setOneProject)),
+    pushModal: project => dispatch(pushModal(PROJECT_EDIT_MODAL, { project }))
   }
 }
 

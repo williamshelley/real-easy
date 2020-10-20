@@ -28,7 +28,9 @@ const receiveSessionErrors =  errors => {
 export const login = user => dispatch => {
   return (API_UTIL.login(user)
     .then(res => dispatch(loginUser(decode(res))))
-    .catch(err => dispatch(receiveSessionErrors(err.response.data)))
+    .catch(err => {
+      return dispatch(receiveSessionErrors(err.response.data));
+    })
   );
 }
 
