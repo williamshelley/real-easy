@@ -11,7 +11,6 @@ const validatePositions = positionArray => {
     let pos = position;
     pos.title = validText(pos.title) ? pos.title : "";
     pos.description = validText(pos.description) ? pos.description : "";
-    pos.user = validId(pos.user) ? pos.user : "";
     pos.wage = String(pos.wage) ? String(pos.wage) : -1;
 
     if (Validator.isEmpty(pos.title)) {
@@ -20,10 +19,6 @@ const validatePositions = positionArray => {
     
     if (Validator.isEmpty(pos.description)) {
       errors.description = "Position description is required";
-    }
-
-    if (Validator.isEmpty(pos.user)) {
-      errors.user = "Position user id is required";
     }
 
     if (!Validator.isInt(pos.wage, { min: MIN_WAGE, max: MAX_WAGE })) {

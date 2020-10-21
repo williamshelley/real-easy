@@ -32,12 +32,22 @@ export const createProject = (project, action) => dispatch => {
     .catch(errors => dispatch(receiveErrors(errors)));
 }
 
+export const editProject = (project, action) => dispatch => {
+  return API_UTIL.editOneProject(project)
+    .then(res => {
+      return dispatch(action(res.data))
+    })
+    .catch(errors => {
+      return dispatch(receiveErrors(errors.response.data))
+    });
+}
+
 export const findOneProject = (id, action) => dispatch => {
   return API_UTIL.getOneProject(id)
     .then(res => {
       return dispatch(action(res.data));
     })
-    .catch(errors => dispatch(receiveErrors(errors)));
+    .catch(errors => dispatch(receiveErrors(errors.response.data)));
 }
 
 export const findManyUserProjects = (userId, action) => dispatch => {
@@ -45,5 +55,5 @@ export const findManyUserProjects = (userId, action) => dispatch => {
   .then(res => {
     return dispatch(action(res.data));
   })
-  .catch(errors => dispatch(receiveErrors(errors)));
+  .catch(errors => dispatch(receiveErrors(errors.response.data)));
 }

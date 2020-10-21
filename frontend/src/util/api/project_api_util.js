@@ -11,3 +11,7 @@ export const getOneProject = id => {
 export const getManyUserProjects = userId => {
   return axios.get(`api/projects/users/${userId}`);
 }
+
+export const editOneProject = project => {
+  return axios.post("api/projects/edit", project);
+}

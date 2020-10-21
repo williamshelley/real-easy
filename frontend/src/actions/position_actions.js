@@ -34,3 +34,10 @@ export const findUserPositions = (userId, action) => dispatch => {
     .catch(errors => dispatch(receiveErrors(errors)));
 }
 
+export const findProjectPositions = (projectId, action) => dispatch => {
+  return API_UTIL.getProjectPositions(projectId)
+    .then(res => {
+      return dispatch(action(res.data))
+    })
+    .catch(errors => dispatch(receiveErrors(errors)));
+}

@@ -1,44 +1,151 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { editProject, mergeOneProject } from "../../actions/project_actions";
+import PositionCreate from "../positions/position_create";
+import { findProjectPositions, setManyPositions } from "../../actions/position_actions";
+import { selectAllPositions } from "../../selectors/position_selectors";
+import uuid from 'react-uuid'
 
-const ProjectEditModalComponent = ({ project }) => {
-  const [name, setName] = useState(project.name);
-  const [description, setDescription] = useState(project.description);
+const _emptyPosition = { title: "", description: "", wage: 0 }
+
+class ProjectEditModalComponent extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: props.project.name,
+      description: props.project.description,
+      positions: props.positions,
+      deletePositions: []
+    }
+
+    this.setName = this.setName.bind(this);
+    this.setDescription = this.setDescription.bind(this);
+    this.setPositions = this.setPositions.bind(this);
+  }
+
+  setName(value) {
+    this.setState({ name: value });
+  }
+
+  setDescription(value) {
+    this.setState({ description: value });
+  }
+
+  setPositions(value) {
+    this.setState({ positions: value });
+  }
+
+  componentDidMount() {
+    this.props.findPositions(this.props.project.id).then(() => {
+      this.setState({ positions: this.props.positions });
+    });
+  }
+
+  render() {
+    const { name, description, positions, deletePositions } = this.state;
+    const { editProject, project } = this.props;
   
-  return project ? (
-    <form className="project-edit">
-      <input 
-        type="text"
-        autoComplete="on"
-        placeholder={project.name}
-        value={name}
-        onChange={e => setName(e.target.value)}
-      />
+  
+    const _addPosition = e => {
+      let newPositions = positions;
+      newPositions.push(_emptyPosition);
+      this.setPositions(newPositions);
+    }
+  
+    const _rmPosition = idx => {
+      return e => {
+        if (positions[idx].id) {
+          deletePositions.push(positions[idx].id);
+        }
+        let newPositions = positions.slice(0, idx).concat(positions.slice(idx + 1));
+        this.setPositions(newPositions);
+      }
+    }
 
-      <textarea 
-        type="text"
-        autoComplete="on"
-        placeholder={project.description}
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-      />
+    const _updatePositions = idx => {
+      return position => {
+        let newPositions = positions;
+        newPositions[idx] = position;
+        this.setPositions(newPositions);
+      }
+    }
+  
+    const _onSubmit = () => {
+      let filteredPositions = [];
+      positions.forEach(pos => {
+        if (pos.id || (pos.title && pos.description && pos.wage > 0)) {
+          pos.project = project.id;
+          filteredPositions.push(pos);
+        }
+      });
 
-      <input type="submit" value="Edit Project" />
+      editProject({ id: project.id, name, description, positions: filteredPositions, deletePositions });
+    }
 
-      <p>Add Positions Placeholder</p>
-    </form>
-  ) : <div>Emtpy</div>;
-};
+    const positionsList = () => {
+      console.log(positions);
+      let timer = null;
+      return (
+        <>
+        { positions.map((pos, idx) => {
+            return (
+              <PositionCreate 
+                key={pos.id ? pos.id : uuid()} 
+                deletePositions={deletePositions}
+                timer={timer}
+                position={pos} 
+                onRemove={_rmPosition(idx)} 
+                updatePositions={_updatePositions(idx)} 
+              />
+        )})}
+        </>
+      );
+    }
+
+    return project ? (
+      <form onSubmit={_onSubmit} className="project-edit">
+        <input 
+          type="text"
+          autoComplete="on"
+          placeholder={project.name}
+          value={name}
+          onChange={e => this.setName(e.target.value)}
+        />
+  
+        <textarea 
+          type="text"
+          autoComplete="on"
+          placeholder={project.description}
+          value={description}
+          onChange={e => this.setDescription(e.target.value)}
+        />
+  
+        <ul>
+          <h3>Positions</h3>
+          { positionsList() }
+        </ul>
+        
+        <button type="button" onClick={_addPosition}>Add Position</button>
+  
+        <input type="submit" value="Edit Project" />
+  
+      </form>
+    ) : null;
+  }
+}
 
 const msp = (state, ownProps) => {
   return {
-
+    positions: Object.values(selectAllPositions(state))
   }
 }
 
 const mdp = dispatch => {
   return {
-
+    editProject: project => dispatch(editProject(project, mergeOneProject)),
+    findPositions: projectId => dispatch(findProjectPositions(projectId, setManyPositions))
   }
 }
 

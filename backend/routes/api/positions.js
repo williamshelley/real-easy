@@ -32,13 +32,42 @@ const findPositionsOfUser = userId => {
   })
 }
 
+const findPositionsOfProject = projectId => {
+  return Position.find({ project: Types.ObjectId(projectId) })
+  .then(positions => {
+    if (positions && positions.length >= 0) {
+      positions = positions.map(pos => frontendPosition(pos));
+      let positionsObj = {};
+      positions.forEach(pos => {
+        positionsObj[pos.id] = pos;
+      });
+      return {
+        status: 200,
+        json: positionsObj
+      }
+    } else {
+      return {
+        status: BAD_REQUEST_STATUS,
+        json: "Could not find positions" 
+      }
+    }
+  })
+}
+
 // RETRIEVE POSITIONS A USER IS PART OF
 router.get("/:userId", (req, res) => {
   findPositionsOfUser(req.params.userId).then(resObj => {
     return res.status(resObj.status).json(resObj.json);
   });
-})
+});
+
+router.post("/", (req, res) => {
+  findPositionsOfProject(req.body.projectId).then(resObj => {
+    return res.status(resObj.status).json(resObj.json);
+  });
+});
 
 module.exports = {
-  router
+  router,
+  frontendPosition
 }

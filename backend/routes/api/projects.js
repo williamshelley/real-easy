@@ -4,10 +4,14 @@ const { BAD_REQUEST_STATUS } = require("../../constants/error-constants");
 const Position = require("../../models/Position");
 const Project = require("../../models/Project");
 const validateProject = require("../../validation/project");
+const { frontendPosition } = require("./positions");
+const { merge } = require("lodash");
 
 const frontendProject = projectModel => {
-  let { id, owner, name, description, positions } = projectModel;
-  return { id, owner, name, description, positions };
+  let { id, name, description, positions } = projectModel;
+  positions = positions.map(pos => Types.ObjectId(pos.id));
+  positions = positions ? positions : [];
+  return { id, name, description, positions };
 }
 
 const createProject = async body => {
@@ -43,10 +47,13 @@ const createProject = async body => {
   
         return newProject.save()
         .then(updatedPro => {
-          return {
-            status: 200,
-            json: frontendProject(updatedPro)
-          }
+          return frontendProject(updatedPro)
+            .then(pro => {
+              return {
+                status: 200,
+                json: pro
+              }
+            });
         })
         .catch(err => {
           return {
@@ -59,11 +66,12 @@ const createProject = async body => {
   }
 }
 
-const editProject = (project, currentUser) => {
+const editProject = async project => {
   let {
     errors,
     isValid
   } = validateProject(project);
+
 
   if (!isValid) {
     return {
@@ -71,16 +79,60 @@ const editProject = (project, currentUser) => {
       json: errors
     }
   } else {
+    return Project.findOne({ _id: Types.ObjectId(project.id) })
+      .then(projectModel => {
 
+        let { name, description, positions, deletePositions } = project;
+
+        if (name) { projectModel.name = name; }
+
+        if (description) { projectModel.description = description; }
+
+        if (positions && positions.length > 0) {
+          let newPositions = [];
+          positions.forEach(p => {
+            if (!p.id) { newPositions.push(p); }
+          });
+
+          return Position.insertMany(newPositions)
+            .then(positionModels => {
+              return Position.deleteMany({ _id: { $in: deletePositions.map(p => Types.ObjectId(p)) }}).then(() => {
+                
+                projectModel.positions = projectModel.positions.concat(positionModels.map(p => p.id));
+
+                return projectModel.save()
+                .then(pro => {
+                  return {
+                    status: 200,
+                    json: frontendProject(pro)
+                  }
+                })
+                .catch(err => { 
+                  return { status: BAD_REQUEST_STATUS, json: err };
+                 });
+              });
+              })
+        } else {
+          return projectModel.save()
+          .then(pro => {
+            return {
+              status: 200,
+              json: frontendProject(pro)
+            }
+          })
+          .catch(err => { 
+            return { status: BAD_REQUEST_STATUS, json: err };
+           });
+        }
+      });
   }
-  debugger;
 }
 
 router.get("/:projectId", (req, res) => {
   Project.findOne({ _id: Types.ObjectId(req.params.projectId) })
-  .then(project => {
+  .then(async project => {
     if (project) {
-      return res.status(200).json(frontendProject(project));
+      return res.status(200).json(await frontendProject(project));
     } else {
       return res.status(BAD_REQUEST_STATUS).json("Project does not exist");
     }
@@ -93,9 +145,12 @@ router.get("/:projectId", (req, res) => {
 });
 
 router.post("/edit", (req, res) => {
-  editProject(req.body.project, req.body.user);
-  res.status(999).json({ placeholder: "Placeholder" });
+  editProject(req.body).then(project => {
+    return res.status(project.status).json(project.json);
+  });
 });
+
+
 
 // gets all projects a user has participated in
 router.get("/users/:userId", (req, res) => {
@@ -104,11 +159,14 @@ router.get("/users/:userId", (req, res) => {
     positions = positions.map(p => p.id);
     Project.find({ positions: { $in: positions }})
     .then(projects => {
+      
       projects = projects.map(p => frontendProject(p));
+
       let projectsObj = {};
       projects.forEach(p => {
         projectsObj[p.id] = p;
       });
+
       res.status(200).json(projectsObj);
     })
     .catch(err => res.status(BAD_REQUEST_STATUS).json(err))

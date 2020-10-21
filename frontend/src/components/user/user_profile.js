@@ -18,7 +18,6 @@ class UserProfileComponent extends React.Component {
 
   currentUserSetup() {
     const { currentUser } = this.props;
-    // this.props.clear();
     this.props.findUserProjects(currentUser.id).then(() => {
       this.props.findUserPositions(currentUser.id).then(() => {
         this.props.setFocusedUser(currentUser);
@@ -27,7 +26,6 @@ class UserProfileComponent extends React.Component {
   }
 
   newUserSetup(ownerId) {
-    // this.props.clear();
     this.props.findUserProjects(ownerId).then(() => {
       this.props.findUserPositions(ownerId).then(() => {
         this.props.findUser(ownerId);
