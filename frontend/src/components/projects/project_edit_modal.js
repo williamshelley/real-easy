@@ -5,6 +5,8 @@ import PositionCreate from "../positions/position_create";
 import { findProjectPositions, setManyPositions } from "../../actions/position_actions";
 import { selectAllPositions } from "../../selectors/position_selectors";
 import uuid from 'react-uuid'
+import { popModal } from "../../actions/ui_actions";
+import { withRouter } from "react-router-dom";
 
 const _emptyPosition = { title: "", description: "", wage: 0 }
 
@@ -41,6 +43,12 @@ class ProjectEditModalComponent extends React.Component {
     this.props.findPositions(this.props.project.id).then(() => {
       this.setState({ positions: this.props.positions });
     });
+  }
+
+  UNSAFE_componentWillReceiveProps(newProps) {
+    if (newProps.match.params != this.props.match.params) {
+      this.props.popModal();
+    }
   }
 
   render() {
@@ -145,9 +153,10 @@ const msp = (state, ownProps) => {
 const mdp = dispatch => {
   return {
     editProject: project => dispatch(editProject(project, mergeOneProject)),
-    findPositions: projectId => dispatch(findProjectPositions(projectId, setManyPositions))
+    findPositions: projectId => dispatch(findProjectPositions(projectId, setManyPositions)),
+    popModal: () => dispatch(popModal())
   }
 }
 
-const ProjectEditModal = connect(msp, mdp)(ProjectEditModalComponent);
+const ProjectEditModal = withRouter(connect(msp, mdp)(ProjectEditModalComponent));
 export default ProjectEditModal;

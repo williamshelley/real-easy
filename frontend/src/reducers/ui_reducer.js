@@ -5,6 +5,7 @@ const uiReducer = (state = [], action) => {
   Object.freeze(state);
   let newState = merge([], state);
   switch(action.type) {
+
     case PUSH_MODAL:
       let shouldPush = true;
       newState.forEach(modal => {
@@ -17,6 +18,7 @@ const uiReducer = (state = [], action) => {
       }
 
       return newState;
+
     case POP_MODAL:
       if (newState.length > 0) {
         newState.pop();

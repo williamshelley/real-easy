@@ -15,7 +15,7 @@ const ProjectCreateComponent = ({ history, currentUser, createProject }) => {
 
   const _onSubmit = function() {
     
-    createProject({ name, description, positions }).then(() => {
+    createProject({ owner: currentUser.id, name, description, positions }).then(() => {
       history.push("/");
     });
   }

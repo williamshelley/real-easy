@@ -1,6 +1,6 @@
 const { receive, clear } = require("./generic_actions");
 export const PUSH_MODAL = "PUSH_MODAL";
-export const POP_MODAL = "PUSH_MODAL";
+export const POP_MODAL = "POP_MODAL";
 
 const MODAL = "modal";
 

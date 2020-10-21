@@ -8,10 +8,10 @@ const { frontendPosition } = require("./positions");
 const { merge } = require("lodash");
 
 const frontendProject = projectModel => {
-  let { id, name, description, positions } = projectModel;
+  let { id, owner, name, description, positions } = projectModel;
   positions = positions.map(pos => Types.ObjectId(pos.id));
   positions = positions ? positions : [];
-  return { id, name, description, positions };
+  return { id, owner, name, description, positions };
 }
 
 const createProject = async body => {
@@ -44,7 +44,7 @@ const createProject = async body => {
       return Position.insertMany(newPositions)
       .then(positions => {
         newProject.positions = positions.map(pos => pos.id);
-  
+        
         return newProject.save()
         .then(updatedPro => {
           return frontendProject(updatedPro)

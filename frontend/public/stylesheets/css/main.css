@@ -93,4 +93,30 @@ form.login, form.signup {
     height: fit-content;
     background-color: #ffec82; }
 
+.project {
+  flex-direction: column; }
+
+.projects-list > :first-child {
+  margin-bottom: 20px; }
+.projects-list a.project {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between; }
+  .projects-list a.project * {
+    width: fit-content;
+    text-align: center; }
+
+.positions-list > :first-child {
+  margin-bottom: 20px; }
+.positions-list .position {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  height: fit-content; }
+  .positions-list .position * {
+    width: fit-content;
+    text-align: center; }
+
 /*# sourceMappingURL=main.css.map */

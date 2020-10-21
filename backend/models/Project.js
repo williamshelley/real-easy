@@ -3,6 +3,11 @@ const { PROJECT, USER, POSITION } = require('../constants/model-names');
 const Schema = mongoose.Schema;
 
 const ProjectSchema = new Schema({
+    owner: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: USER
+    },
     name: {
       type: String,
       required: true
