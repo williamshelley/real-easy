@@ -95,8 +95,10 @@ const editProject = async project => {
           });
 
           return Position.insertMany(newPositions)
-            .then(positionModels => {
-              return Position.deleteMany({ _id: { $in: deletePositions.map(p => Types.ObjectId(p)) }}).then(() => {
+            .then(positionModels => { 
+              return Position.deleteMany({ _id: { 
+                $in: deletePositions.map(p => Types.ObjectId(p)) 
+              }}).then(() => {
                 
                 projectModel.positions = projectModel.positions.concat(positionModels.map(p => p.id));
 
@@ -111,7 +113,7 @@ const editProject = async project => {
                   return { status: BAD_REQUEST_STATUS, json: err };
                  });
               });
-              })
+            })
         } else {
           return projectModel.save()
           .then(pro => {
