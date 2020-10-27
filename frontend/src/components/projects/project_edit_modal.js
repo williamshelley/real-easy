@@ -89,12 +89,11 @@ class ProjectEditModalComponent extends React.Component {
         }
       });
 
-      debugger;
-      editProject({ id: project.id, name, description, positions: filteredPositions, deletePositions });
+      // debugger;
+      editProject({ id: project.id, name, description, positions: filteredPositions });
     }
 
     const positionsList = () => {
-      console.log(positions);
       let timer = null;
       return (
         <>
