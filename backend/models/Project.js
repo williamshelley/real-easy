@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const PositionSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   description: {
     type: String,
@@ -38,10 +39,6 @@ const ProjectSchema = new Schema({
       required: true
     },
     positions: [PositionSchema]
-    // positions: [{
-    //   type: Schema.Types.ObjectId,
-    //   ref: POSITION
-    // }]
   }, {
     timestamps: true
   });

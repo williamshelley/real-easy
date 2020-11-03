@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 
 const users = require("./backend/routes/api/users").router;
 const projects = require("./backend/routes/api/projects").router;
-const positions = require("./backend/routes/api/positions").router;
 
 const app = express();
 
@@ -25,7 +24,6 @@ require('./config/passport')(passport);
 
 app.use("/api/users", users);
 app.use("/api/projects", projects)
-app.use("/api/positions", positions)
 
 app.use(express.static("public"));
 

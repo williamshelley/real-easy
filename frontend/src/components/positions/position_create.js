@@ -1,39 +1,24 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-const PositionCreateComponent = ({ position, onRemove, deletePositions }) => {
+const PositionCreateComponent = ({ position, onRemove }) => {
   const [title, setTitle] = useState(position.title);
   const [description, setDescription] = useState(position.description);
   const [wage, setWage] = useState(position.wage);
 
   const changeTitle = e => {
-    if (position.id) {
-      deletePositions.push(position.id);
-      delete position.id;
-    }
     position.title = e.target.value;
     setTitle(e.target.value);
-    // updatePositions({ title: e.target.value, description, wage });
   }
 
   const changeDescription = e => {
-    if (position.id) {
-      deletePositions.push(position.id);
-      delete position.id;
-    }
     position.description = e.target.value;
     setDescription(e.target.value);
-    // updatePositions({ title, description: e.target.value, wage});
   }
 
   const changeWage = e => {
-    if (position.id) {
-      deletePositions.push(position.id);
-      delete position.id;
-    }
     position.wage = parseInt(e.target.value);
     setWage(parseInt(e.target.value));
-    // updatePositions({ title, description, wage: parseInt(e.target.value) });
   }
   
   return (

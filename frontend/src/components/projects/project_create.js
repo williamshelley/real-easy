@@ -6,16 +6,10 @@ import { selectCurrentUser } from "../../selectors/user_selectors";
 const ProjectCreateComponent = ({ history, currentUser, createProject }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [positions, setPositions] = useState([{
-    title: "Project Creator",
-    description: "Project Creator",
-    wage: 1,
-    user: currentUser.id
-  }]);
 
   const _onSubmit = function() {
     
-    createProject({ owner: currentUser.id, name, description, positions }).then(() => {
+    createProject({ owner: currentUser.id, name, description }).then(() => {
       history.push("/");
     });
   }
@@ -39,8 +33,6 @@ const ProjectCreateComponent = ({ history, currentUser, createProject }) => {
       />
 
       <input type="submit" value="Create Project" />
-
-      <p>Add Positions Placeholder</p>
     </form>
   );
 }

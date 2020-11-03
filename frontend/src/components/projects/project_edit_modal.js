@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { editProject, mergeOneProject } from "../../actions/project_actions";
 import PositionCreate from "../positions/position_create";
-import { findProjectPositions, setManyPositions } from "../../actions/position_actions";
 import { selectAllPositions } from "../../selectors/position_selectors";
 import uuid from 'react-uuid'
 import { popModal } from "../../actions/ui_actions";
@@ -18,8 +17,7 @@ class ProjectEditModalComponent extends React.Component {
     this.state = {
       name: props.project.name,
       description: props.project.description,
-      positions: props.positions,
-      deletePositions: []
+      positions: props.project.positions
     }
 
     this.setName = this.setName.bind(this);
@@ -39,14 +37,8 @@ class ProjectEditModalComponent extends React.Component {
     this.setState({ positions: value });
   }
 
-  componentDidMount() {
-    this.props.findPositions(this.props.project.id).then(() => {
-      this.setState({ positions: this.props.positions });
-    });
-  }
-
   UNSAFE_componentWillReceiveProps(newProps) {
-    if (newProps.match.params != this.props.match.params) {
+    if (newProps.match.params !== this.props.match.params) {
       this.props.popModal();
     }
   }
@@ -64,9 +56,6 @@ class ProjectEditModalComponent extends React.Component {
   
     const _rmPosition = idx => {
       return e => {
-        if (positions[idx].id) {
-          deletePositions.push(positions[idx].id);
-        }
         let newPositions = positions.slice(0, idx).concat(positions.slice(idx + 1));
         this.setPositions(newPositions);
       }
@@ -100,7 +89,7 @@ class ProjectEditModalComponent extends React.Component {
         { positions.map((pos, idx) => {
             return (
               <PositionCreate 
-                key={pos.id ? pos.id : uuid()} 
+                key={uuid()} 
                 deletePositions={deletePositions}
                 timer={timer}
                 position={pos} 
@@ -153,7 +142,6 @@ const msp = (state, ownProps) => {
 const mdp = dispatch => {
   return {
     editProject: project => dispatch(editProject(project, mergeOneProject)),
-    findPositions: projectId => dispatch(findProjectPositions(projectId, setManyPositions)),
     popModal: () => dispatch(popModal())
   }
 }

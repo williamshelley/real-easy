@@ -47,7 +47,9 @@ export const findOneProject = (id, action) => dispatch => {
     .then(res => {
       return dispatch(action(res.data));
     })
-    .catch(errors => dispatch(receiveErrors(errors.response.data)));
+    .catch(errors => {
+      return dispatch(receiveErrors(errors.response.data))
+    });
 }
 
 export const findManyUserProjects = (userId, action) => dispatch => {

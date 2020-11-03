@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { clearPositions, findUserPositions, setManyPositions } from "../../actions/position_actions";
-import { clearProjects, findManyUserProjects, setManyProjects } from "../../actions/project_actions";
+import { findManyUserProjects, setManyProjects } from "../../actions/project_actions";
 import { findOneUser, setFocusedUser } from "../../actions/user_actions";
 import { selectAllPositions } from "../../selectors/position_selectors";
 import { selectAllProjects } from "../../selectors/project_selectors";
@@ -19,17 +18,17 @@ class UserProfileComponent extends React.Component {
   currentUserSetup() {
     const { currentUser } = this.props;
     this.props.findUserProjects(currentUser.id).then(() => {
-      this.props.findUserPositions(currentUser.id).then(() => {
+      // this.props.findUserPositions(currentUser.id).then(() => {
         this.props.setFocusedUser(currentUser);
-      });
+      // });
     });
   }
 
   newUserSetup(ownerId) {
     this.props.findUserProjects(ownerId).then(() => {
-      this.props.findUserPositions(ownerId).then(() => {
+      // this.props.findUserPositions(ownerId).then(() => {
         this.props.findUser(ownerId);
-      });
+      // });
     });
   }
 
@@ -132,11 +131,6 @@ const mdp = dispatch => {
     setFocusedUser: user => dispatch(setFocusedUser(user)),
     findUserProjects: userId => dispatch(findManyUserProjects(userId, setManyProjects)),
     findUser: id => dispatch(findOneUser(id, setFocusedUser)),
-    findUserPositions: userId => dispatch(findUserPositions(userId, setManyPositions)),
-    clear: () => {
-      dispatch(clearPositions());
-      dispatch(clearProjects());
-    }
   }
 };
 
