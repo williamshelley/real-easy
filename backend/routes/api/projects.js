@@ -135,5 +135,11 @@ router.all("/get-one", (req, res) => {
 
 module.exports = {
   router,
-  returnProject
+  frontendProject,
+  returnProject,
+  returnProjectArray,
+  createProject,
+  editProject,
+  getMany,
+  getOne
 };

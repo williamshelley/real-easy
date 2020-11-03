@@ -4,6 +4,7 @@ const supertest = require("supertest");
 const expect = require("expect");
 const User = require("../backend/models/User");
 const { frontendUser, backendUser, signupUser } = require("../backend/routes/api/users");
+const mongoose = require("mongoose");
 
 describe("User Auth", () => {
   let request, testUser;
@@ -39,9 +40,11 @@ describe("User Auth", () => {
   after(async () => {
     await User.deleteOne({ email: testUser.email });
     await User.deleteOne({ email: newUser.email });
+    mongoose.disconnect();
   });
 
-  it("'frontendUser' filters data correctly", done => {
+  describe("#frontendUser", function() {
+    it("'frontendUser' filters data correctly", done => {
       let feUser = frontendUser(testUser);
       expect(feUser).toBeTruthy();
 
@@ -53,9 +56,11 @@ describe("User Auth", () => {
       expect(feUser.password).toBeFalsy();
 
       done();
-  });
+    });
+  })
 
-  it("'backendUser' filters data correctly", done => {
+  describe("#backendUser", function() {
+    it("'backendUser' filters data correctly", done => {
       let beUser = backendUser(testUser);
       expect(beUser).toBeTruthy();
 
@@ -66,23 +71,27 @@ describe("User Auth", () => {
       expect(beUser.password).toEqual(testUser.password);
 
       done();
+    });
   });
 
-  it("User can sign up and sends correct response on valid user", done => {
-    request
-    .post("/api/users/signup")
-    .send(newUser)
-    .expect(200)
-    .expect(res => {
-      let { success, token } = res.body;
-      let bearer = "Bearer";
-      expect(success).toBe(true);
-      expect(token.slice(0, bearer.length)).toEqual(bearer);
-    })
-    .end(done);
+  describe("POST /api/users/signup", function() {
+    it("User can sign up and sends correct response on valid user", done => {
+      request
+      .post("/api/users/signup")
+      .send(newUser)
+      .expect(200)
+      .expect(res => {
+        let { success, token } = res.body;
+        let bearer = "Bearer";
+        expect(success).toBe(true);
+        expect(token.slice(0, bearer.length)).toEqual(bearer);
+      })
+      .end(done);
+    });
   });
 
-  it("User can log in and sends correct response on valid user", done => {
+  describe("POST /api/users/login", function() {
+    it("User can log in and sends correct response on valid user", done => {
       request
       .post("/api/users/login")
       .send(testUser)
@@ -94,6 +103,7 @@ describe("User Auth", () => {
         expect(token.slice(0, bearer.length)).toEqual(bearer);
       })
       .end(done);
-  });
+    });
+  })
 
 });
