@@ -110,7 +110,7 @@ router.all("/new", (req, res) => {
 // edit an existing project
 router.all("/edit", (req, res) => {
   editProject(req.body.project).then(({ status, json }) => {
-    return res.status(status).json(json)
+    return res.status(status).json(json);
   });
 });
 

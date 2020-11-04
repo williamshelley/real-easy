@@ -3,7 +3,7 @@ const app = require("../server.config");
 const supertest = require("supertest");
 const expect = require("expect");
 const User = require("../backend/models/User");
-const { frontendUser, backendUser, signupUser } = require("../backend/routes/api/users");
+const { frontendUser, backendUser, signup } = require("../backend/routes/api/users");
 const mongoose = require("mongoose");
 
 describe("User Auth", () => {
@@ -27,11 +27,7 @@ describe("User Auth", () => {
 
       testUser = { name, email, birthDate, password, password2, accountType };
 
-      await signupUser({ 
-        user: new User(backendUser(testUser)), 
-        callback: () => {}, // do nothing instead of send response
-      });
-
+      await signup(testUser);
       newUser = merge({}, newUser, { name, birthDate, password, password2, accountType });
     }
 
@@ -40,6 +36,7 @@ describe("User Auth", () => {
   after(async () => {
     await User.deleteOne({ email: testUser.email });
     await User.deleteOne({ email: newUser.email });
+    // change mongoose connection
     mongoose.disconnect();
   });
 
@@ -78,7 +75,7 @@ describe("User Auth", () => {
     it("User can sign up and sends correct response on valid user", done => {
       request
       .post("/api/users/signup")
-      .send(newUser)
+      .send({user: newUser})
       .expect(200)
       .expect(res => {
         let { success, token } = res.body;
@@ -94,7 +91,7 @@ describe("User Auth", () => {
     it("User can log in and sends correct response on valid user", done => {
       request
       .post("/api/users/login")
-      .send(testUser)
+      .send({ user: testUser })
       .expect(200)
       .expect(res => {
         let { success, token } = res.body;

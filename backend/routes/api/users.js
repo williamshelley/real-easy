@@ -8,23 +8,13 @@ const User = require("../../models/User")
 const keys = require('../../../config/keys');
 const validateSignupInput = require('../../validation/signup');
 const validateLoginInput = require('../../validation/login');
-const { BAD_REQUEST_STATUS } = require('../../constants/error-constants');
 const { TOKEN_EXPIRE_TIME, SALT_LENGTH } = require('../../constants/user-auth-constants');
 const { Types } = require('mongoose');
-
-const USER_EXISTS_MESSAGE = "User already exists";
-const NOT_USER_EXISTS_MESSAGE = "User does not exist";
-const BAD_PASSWORD_MESSAGE = "Invalid Password";
+const { genResObj } = require('../../util/route_helpers');
 
 const frontendUser = user => {
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    birthDate: user.birthDate,
-    about: user.about,
-    accountType: user.accountType
-  }
+  let { id, name, email, birthDate, about, accountType } = user;
+  return { id, name, email, birthDate, about, accountType };
 }
 
 const backendUser = user => {
@@ -34,96 +24,90 @@ const backendUser = user => {
   return data;
 }
 
-const signAndSendToken = (res, payload) => {
-  jwt.sign(payload, keys.secretOrKey, {
-    expiresIn: TOKEN_EXPIRE_TIME
-  }, (err, token) => {
-    res.json({
-      success: true,
-      token: "Bearer " + token
+const signToken = user => {
+  let token = jwt.sign(user, keys.secretOrKey, { expiresIn: TOKEN_EXPIRE_TIME });
+  return "Bearer " + token;
+}
+
+const validateSignup = async (user, successCallback) => {
+  let userValidation = validateSignupInput(user);
+  if (!userValidation.isValid) {
+    return genResObj(400, userValidation.errors);
+  } else {
+    return successCallback(user);
+  }
+}
+
+const verifyPassword = async (password, hashedPassword) => {
+  return bcrypt.compare(password, hashedPassword).then(isMatch => {
+    return isMatch;
+  });
+}
+
+const login = async userCredentials => {
+
+  // check if user exists
+  return User.findOne({ email: userCredentials.email })
+    .then(userDoc => {
+      if (userDoc) {
+        let validation = validateLoginInput(userCredentials);
+        let { password } = userCredentials;
+        if (validation.isValid) {
+            return verifyPassword(password, userDoc.password).then(validPassword => {
+              if (validPassword) {
+                let token = signToken(frontendUser(userDoc));
+                return genResObj(200, { success: true, token });
+              } else {
+                return genResObj(400, { credentials: "Invalid credentials"});
+              }
+          })
+        } else {
+          return genResObj(400, validation.errors);
+        }
+
+      } else {
+        return genResObj(400, { credentials: "Invalid credentials" });
+      }
+
+    })
+    .catch(error => {
+      return genResObj(400, error.toLocaleString());
     });
-  });
 }
 
-// callback is run after user is saved to db, defaults to sending response to server
-const signupUser = ({ res, user, callback }) => {
-  const defaultCallback = user => {
-    let payload = frontendUser(user);
-    signAndSendToken(res, payload);
-  }
-  callback = callback ? callback : defaultCallback;
-
-  bcrypt.genSalt(SALT_LENGTH, (_, salt) => {
-    bcrypt.hash(user.password, salt, (err, hash) => {
-      if (err) { throw err; }
-      user.password = hash;
-      user.save()
-        .then(callback)
-        .catch(err => res.status(BAD_REQUEST_STATUS).json(err));
-    });
-  });
-}
-
-const loginUser = ({ res, password, user, errors = {} }) => {
-  bcrypt.compare(password, user.password).then(isMatch => {
-    if (isMatch) {
-      let payload = frontendUser(user);
-      signAndSendToken(res, payload);
-    } else {
-      errors.password = BAD_PASSWORD_MESSAGE;
-      return res.status(BAD_REQUEST_STATUS).json(errors);
-    }
-  });
-}
-
-
-// separate request from backend request
-// instead of passing req/res, just pass in data
-const authenticateSignup = (body, res) => {
-  let {
-    errors,
-    isValid
-  } = validateSignupInput(body);
-
-  if (!isValid) {
-    return res.status(BAD_REQUEST_STATUS).json(errors);
-  }
-
-  User.findOne({
-    email: body.email
-  }).then(user => {
-    if (user) {
-      errors.email = USER_EXISTS_MESSAGE;
-      return res.status(BAD_REQUEST_STATUS).json(errors);
-    } else {
-      const newUser = new User(backendUser(body));
-      signupUser({ res, user: newUser });
-    }
-  });
-}
-
-const authenticateLogin = (body, res) => {
-  let {
-    errors,
-    isValid
-  } = validateLoginInput(body);
-  
-  if (!isValid) {
-    return res.status(BAD_REQUEST_STATUS).json(errors);
-  }
-
-  let { email, password } = body;
-
-  User.findOne({
-    email
-  }).then(user => {
-    if (!user) {
-      errors.email = NOT_USER_EXISTS_MESSAGE;
-      return res.status(BAD_REQUEST_STATUS).json(errors);
-    }
-
-    loginUser({ res, password, user, errors });
-  });
+const signup = async userCredentials => {
+  return validateSignup(userCredentials, validUser => {
+    return User.findOne({ email: validUser.email }).then(userDoc => {
+      // return 400 status if the user already exists
+      if (userDoc) {
+        return genResObj(400, { credentials: "User already exists" });
+      } else {
+        return bcrypt.genSalt(SALT_LENGTH).then(salt => {
+          // create user model and generate hashed password
+          let user = new User(validUser);
+          return bcrypt.hash(user.password, salt).then(hash => {
+            // set hashed password to be password saved in db
+            user.password = hash;
+            return user.save().then(savedUser => {
+                // generate response object for the saved user (same as login)
+                if (savedUser) {
+                  let token = signToken(frontendUser(savedUser));
+                  return genResObj(200, { success: true, token });
+                } else {
+                  return genResObj(400, "Unable to save user");
+                }
+              })
+              .catch(error => {
+                return genResObj(400, error.toLocaleString());
+              });
+          })
+          .catch(err => {
+            return genResObj(400, err.toLocaleString());
+          });
+        });
+      }
+    })
+  })
 }
 
 const buildSearchParams = filters => {
@@ -138,8 +122,6 @@ const buildSearchParams = filters => {
 }
 
 const findUsers = (filters, res) => {
-  // let { filters } = req.body;
-
   const searchParams = buildSearchParams(filters);
 
   let responseObj = {};
@@ -161,22 +143,30 @@ const findUsers = (filters, res) => {
 }
 
 const findUser = (userId, res) => {
-  // let { userId } = req.params;
-
   User.findOne({ _id: Types.ObjectId(userId) })
     .then(user => {
       if (user) {
         return res.json(frontendUser(user ));
       } else {
-        return res.status(BAD_REQUEST_STATUS).json(NOT_USER_EXISTS_MESSAGE);
+        return res.status(400).json("User could not be found");
       }
     })
     .catch(errors => {
-      if (errors) {
-        return res.status(BAD_REQUEST_STATUS).json(errors);
-      }
+      return res.status(400).json(errors);
     });
 }
+
+router.all("/login", (req, res) => {
+  login(req.body.user).then(({ status, json }) => {
+    return res.status(status).json(json);
+  })
+})
+
+router.all("/signup", (req, res) => {
+  signup(req.body.user).then(({ status, json }) => {
+    return res.status(status).json(json);
+  })
+});
 
 // RETRIEVE USERS WITH FILTERS
 router.post("/", (req, res) => {
@@ -188,16 +178,6 @@ router.get("/:userId", (req, res) => {
   findUser(req.params.userId, res);
 });
 
-// SIGN UP USER
-router.post("/signup", (req, res) => {
-  authenticateSignup(req.body, res);
-});
-
-
-// LOG IN USER
-router.post("/login", (req, res) => {
-  authenticateLogin(req.body, res);
-});
 
 
 // GET CURRENT USER
@@ -211,9 +191,5 @@ module.exports = {
   router,
   frontendUser,
   backendUser,
-  signAndSendToken,
-  signupUser,
-  loginUser,
-  authenticateSignup,
-  authenticateLogin,
+  signup
 };

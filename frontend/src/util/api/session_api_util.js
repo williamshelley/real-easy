@@ -9,9 +9,9 @@ export const setAuthToken = async token => {
 };
 
 export const signup = user => {
-  return axios.post('/api/users/signup', user);
+  return axios.post('/api/users/signup', { user });
 };
 
 export const login = user => {
-  return axios.post('/api/users/login', user);
+  return axios.post('/api/users/login', { user });
 };
