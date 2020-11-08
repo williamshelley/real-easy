@@ -9,6 +9,8 @@ Backlog:
 
 - Implement SuperTest
 - Break up route functionality for unit tests
+- Finish project tests
+- Finish project requests/accepts/rejects
 
 -----
 
