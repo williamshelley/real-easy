@@ -4,6 +4,7 @@ import usersSearchReducer from "./users_search_reducer";
 import focusedUserReducer from "./focused_user_reducer";
 import projectsReducer from "./projects_reducer";
 import positionsReducer from "./positions_reducer";
+import requestsReducer from "./requests_reducer";
 
 const entitiesReducer = combineReducers({
   users: usersReducer,
@@ -11,6 +12,7 @@ const entitiesReducer = combineReducers({
   focusedUser: focusedUserReducer,
   projects: projectsReducer,
   positions: positionsReducer,
+  requests: requestsReducer
 });
 
 export default entitiesReducer;

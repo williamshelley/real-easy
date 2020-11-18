@@ -5,8 +5,14 @@ const validateProject = require("../../validation/project");
 const { genResObj } = require("../../util/route_helpers");
 const validatePositions = require("../../validation/position");
 
+const frontendPosition = positionDoc => {
+  let { id, title, description, wage, user } = positionDoc;
+  return { id, title, description, wage, user };
+}
+
 const frontendProject = projectModel => {
   let { id, owner, name, description, positions } = projectModel;
+  positions = positions.map(p => frontendPosition(p));
   return { id, owner, name, description, positions };
 }
 

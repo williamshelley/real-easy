@@ -37,6 +37,6 @@ const RequestSchema = new Schema({
   }
 });
 
-RequestSchema.index({ requester: 1, recipient: 1 }, { unique: true });
+RequestSchema.index({ recipient: 1, requester: 1, position: 1 }, { unique: true });
 
 module.exports = Request = mongoose.model(REQUEST, RequestSchema);

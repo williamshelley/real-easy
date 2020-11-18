@@ -4,10 +4,11 @@ const Project = require("../../models/Project");
 const Request = require("../../models/Request");
 const router = require("express").Router();
 const { genResObj } = require("../../util/route_helpers");
+const { returnProject } = require("./projects");
 
 const frontendRequest = requestModel => {
-  let { id, project, requester, recipient } = requestModel;
-  return { id, project, requester, recipient };
+  let { id, project, requester, recipient, status } = requestModel;
+  return { id, project, requester, recipient, status };
 }
 
 const returnRequest = (requestDoc, error) => {
@@ -35,7 +36,7 @@ const editPosition = async ({ project, serviceProvider, position }) => {
   .then(project => {
     if (project && project.owner !== serviceProvider) {
       project.positions.forEach((pos, idx) => {
-        if (pos.title === position) {
+        if (pos._id.toString() === position.toString()) {
           project.positions[idx].user = serviceProvider;
         }
       });
@@ -56,6 +57,7 @@ const updateRequest = async (requestId, newStatus) => {
   return Request.findByIdAndUpdate(requestId, { status: newStatus })
     .then(requestDoc => {
       let { project, serviceProvider, position } = requestDoc;
+      if (newStatus === DECLINED) { serviceProvider = null; }
       return editPosition({ project, serviceProvider, position });
     })
     .catch(err => {
@@ -68,8 +70,42 @@ const acceptRequest = async requestId => {
 }
 
 const declineRequest = async requestId => {
-  return declineRequest(requestId, DECLINED);
+  return updateRequest(requestId, DECLINED);
 }
+
+const returnRequestArray = (requestDocs, error) => {
+  if (requestDocs) {
+    return genResObj(200, requestDocs.map(r => frontendRequest(r)));
+  } else {
+    return genResObj(400, error);
+  }
+}
+
+const getProjectRequests = async projectId => {
+  return Request.find({ project: projectId })
+    .then(requestDocs => {
+      return returnRequestArray(requestDocs, "Could not find requests for this project");
+    })
+    .catch(errors => {
+      return genResObj(400, errors.toLocaleString());
+    })
+}
+
+const deleteRequest = async requestId => {
+  return Request.deleteOne({ _id: ObjectId(requestId) })
+    .then(result => {
+      return genResObj(200, result);
+    })
+    .catch(errors => {
+      return genResObj(400, errors.toLocaleString());
+    })
+}
+
+router.all("/get-project-requests", (req, res) => {
+  getProjectRequests(req.body.projectId).then(({ status, json }) => {
+    return res.status(status).json(json);
+  });
+});
 
 router.all("/new", (req, res) => {
   createRequest(req.body.projectRequest).then(({ status, json }) => {
@@ -84,7 +120,13 @@ router.all("/accept", (req, res) => {
 });
 
 router.all("/decline", (req, res) => {
-  declineRequet(req.body.requestId).then(({ status, json }) => {
+  declineRequest(req.body.requestId).then(({ status, json }) => {
+    return res.status(status).json(json);
+  });
+});
+
+router.all("/delete", (req, res) => {
+  deleteRequest(req.body.requestId).then(({ status, json }) => {
     return res.status(status).json(json);
   });
 });
